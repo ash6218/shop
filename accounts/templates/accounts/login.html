@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Login Form</h2><br>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Login">
+    </form>
+    <br><br>
+    <p>Problem logging? use</p><a href="{% url 'accounts:user_otplogin' %}">OTP Login</a>
+{% endblock %}

@@ -10,6 +10,7 @@ def send_otp_code(phone_number, code):
 
         print(response)
     except APIException as e: 
-        print(e.decode('utf-8'))
+        print(e)
+        # e.decode('utf-8')
     except HTTPException as e: 
-        print(e.decode('utf-8'))
+        print(e)
