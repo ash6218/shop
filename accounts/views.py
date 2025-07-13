@@ -113,6 +113,7 @@ class UserOtpLoginView(View):
     
     def post(self, request):
         form = self.form_class(request.POST)
+
         if form.is_valid():
             random_code = random.randint(1000, 9999)
             send_otp_code(form.cleaned_data['phone_number'], random_code)
@@ -148,8 +149,8 @@ class UserLoginVerifyCodeView(View):
             phone = user_session['phone_number']
             code_instance = OtpCode.objects.get(phone_number = phone)
             expire_check = datetime.now(pytz.timezone('UTC')) - code_instance.created
-            user = User.objects.get(phone_number=phone)
-            if code_instance.code == form.cleaned_data['code'] and expire_check < timedelta(seconds=expiration_seconds):
+            user = User.objects.filter(phone_number=phone).first() # this is important to get None instead of DoesNotExsitsError, also no leakage!
+            if user is not None and code_instance.code == form.cleaned_data['code'] and expire_check < timedelta(seconds=expiration_seconds):
                 login(request,user)
                 code_instance.delete()
                 messages.success(request,f'welcome {user.email}. you logged in successfully', 'success')
