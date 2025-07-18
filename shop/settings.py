@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'accounts.apps.AccountsConfig',
     # third party apps
-]
+    'storages',
+]   
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,3 +135,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "accounts.User"
 # if we use our customized User model, we must define AUTH_USER_MODEL = "<app_name>.<model_name>"
+
+#STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+# ParsPack storages
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+AWS_ACCESS_KEY_ID = '50b1cc4f-5e03-4e07-b338-180bf51e38d8'
+AWS_SECRET_ACCESS_KEY = 'c699d522bb40716be90aabf22e388cd68ecb82c244624c67c766ee730c67ac82'
+AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.ir'
+AWS_STORAGE_BUCKET_NAME = 'shop-ash'
+AWS_SERVICE_NAME = 's3'
+AWS_S3_FILE_OVERWRITE = False
+AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
