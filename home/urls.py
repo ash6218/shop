@@ -6,12 +6,15 @@ app_name = 'home'
 bucket_urls = [
     path('', views.BucketHome.as_view(), name='bucket'),
     path('delete_obj/<str:key>', views.DeleteBucketObject.as_view(), name='delete_obj_bucket'),
-    path('download_obj/<str:key>', views.Downlo9adBucketObject.as_view(), name='download_obj_bucket'),
+    path('download_obj/<str:key>', views.DownloadBucketObject.as_view(), name='download_obj_bucket'),
+    path('upload/', views.UploadImageView.as_view(), name='upload'),
+    
 ]
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
     path('bucket/', include(bucket_urls)),
-    path('<slug:slug>/', views.ProductDetaileView.as_view(), name='product_detail'),
+    path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
 ]
 # bucket should be higher than product_detail and delete
+# path('upload_obj/', views.UploadBucketObject.as_view(), name='upload_obj_bucket'),

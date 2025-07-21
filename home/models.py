@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.html import mark_safe
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -17,7 +18,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
-    image = models.ImageField()
+    #image = models.ImageField(upload_to='products/')
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     description = models.TextField()
     price = models.IntegerField()
     available = models.BooleanField(default=True)
@@ -32,3 +34,14 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse('home:product_detail', args=[self.slug,])
+    
+class UploadImage(models.Model):
+    name = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='product/')
+
+def image_preview(self):
+    if self.image_url:
+        return mark_safe(f'<img src="{self.image_url}" style="max-height: 150px;">')
+    return "-"
+image_preview.short_description = "Preview"
+Product.image_preview = image_preview

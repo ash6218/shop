@@ -1,6 +1,7 @@
 import boto3
 import boto3.session
 from django.conf import settings
+from io import BytesIO
 
 class Bucket:
     """CDN Bucket manager
@@ -35,5 +36,24 @@ class Bucket:
         with open(settings.AWS_LOCAL_STORAGE + key, 'wb') as f:
             self.conn.download_fileobj(settings.AWS_STORAGE_BUCKET_NAME, key, f)
 
+    def upload_object(self, name, content):
+        self.conn.upload_fileobj(BytesIO(content), settings.AWS_STORAGE_BUCKET_NAME, name)
 
 bucket = Bucket()
+
+def list_s3_images():
+    session = boto3.session.Session()
+    s3 = session.client(
+        service_name=settings.AWS_SERVICE_NAME,
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        endpoint_url=settings.AWS_S3_ENDPOINT_URL,
+    )
+    response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
+    images = []
+    for obj in response.get('Contents', []):
+        key = obj['Key']
+        if key.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
+            url = f"{settings.AWS_S3_ENDPOINT_URL}/{settings.AWS_STORAGE_BUCKET_NAME}/{key}"
+            images.append((url, key))  # (value, label)
+    return images

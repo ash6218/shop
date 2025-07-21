@@ -37,11 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # my apps
+    'storages',
     'home.apps.HomeConfig',
     'accounts.apps.AccountsConfig',
-    # third party apps
-    'storages',
 ]   
 
 MIDDLEWARE = [
@@ -124,8 +122,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 # Media Files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -136,14 +134,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.User"
 # if we use our customized User model, we must define AUTH_USER_MODEL = "<app_name>.<model_name>"
 
-#STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
-# ParsPack storages
+STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+# STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+# ParsPack storages
+AWS_ACCESS_KEY_ID = 'EJb9wmgWaXK8IPAB'
+AWS_SECRET_ACCESS_KEY = 'nIkAWhUKjO3EFvrUmnEcKbwT63Kh7PdK'
+AWS_S3_ENDPOINT_URL = 'https://c999265.parspack.net'
+AWS_STORAGE_BUCKET_NAME = 'c999265'
+"""
+# ArvanCloud storages
 AWS_ACCESS_KEY_ID = '50b1cc4f-5e03-4e07-b338-180bf51e38d8'
 AWS_SECRET_ACCESS_KEY = 'c699d522bb40716be90aabf22e388cd68ecb82c244624c67c766ee730c67ac82'
 AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.ir'
 AWS_STORAGE_BUCKET_NAME = 'shop-ash'
+"""
+AWS_S3_REGION_NAME = 'default'
+AWS_QUERYSTRING_AUTH = False
 AWS_SERVICE_NAME = 's3'
 AWS_S3_FILE_OVERWRITE = False
 AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
+AWS_DEFAULT_ACL = None
+AWS_S3_ADDRESSING_STYLE = 'path'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
