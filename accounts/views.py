@@ -8,6 +8,8 @@ from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .tasks import send_otp_code_task
+from shop import settings
 
 class UserRegisterView(View):
     form_class = UserCreationForm
@@ -116,7 +118,10 @@ class UserOtpLoginView(View):
 
         if form.is_valid():
             random_code = random.randint(1000, 9999)
-            send_otp_code(form.cleaned_data['phone_number'], random_code)
+            if settings.CELERY_IS_ACTIVE:
+                send_otp_code_task.delay(form.cleaned_data['phone_number'], random_code)
+            else:
+                send_otp_code(form.cleaned_data['phone_number'], random_code)
             OtpCode.objects.create(phone_number=form.cleaned_data['phone_number'], code=random_code)
             request.session['user_otplogin_info'] = {'phone_number' : form.cleaned_data['phone_number']}
             messages.success(request, 'we sent you a code.', 'success')

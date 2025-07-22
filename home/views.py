@@ -7,7 +7,7 @@ from .forms import ImageUploadForm
 from bucket import bucket
 import os
 from utils import IsAdminUserMixin
-
+from shop import settings
 
 class HomeView(View):
     def get(self, request):
@@ -26,21 +26,28 @@ class BucketHome(IsAdminUserMixin, View):
     def get(self, request):
         objects = tasks.all_bucket_objects_task()
         # all_bucket_objects_task.delay() if async.
+        objects = sorted(objects, key=lambda x: x['LastModified'], reverse=True) # order by LastModified
         return render(request, self.template_name, {'objects':objects})
     
 class DeleteBucketObject(IsAdminUserMixin, View):
-
-    # with celery
     def get(self, request, key):
-        tasks.delete_object_task.delay(key)
-        messages.success(request, 'your object will be deleted soon...', 'info')
+        if settings.CELERY_IS_ACTIVE:
+            tasks.delete_object_task.delay(key)
+            messages.success(request, 'your object will be deleted soon...', 'info')
+        else:
+            bucket.delete_object(key)
+            messages.success(request, 'your object is deleted', 'success')
         return redirect('home:bucket')
 
 
 class DownloadBucketObject(IsAdminUserMixin, View):
     def get(self, request, key):
-        tasks.download_object_task.delay(key)
-        messages.success(request, 'your object will be downloaded soon...', 'info')
+        if settings.CELERY_IS_ACTIVE:
+            tasks.download_object_task.delay(key)
+            messages.success(request, 'your object will be downloaded soon...', 'info')
+        else:
+            bucket.download_object(key)
+            messages.success(request, 'your object is downloaded', 'success')
         return redirect('home:bucket')
 
 
@@ -73,10 +80,15 @@ class UploadImageView(IsAdminUserMixin, View):
             final_file_name = name_from_form + original_ext
 
             file_content = image_file.read()
+            if settings.CELERY_IS_ACTIVE:
+                tasks.upload_object_task.delay(final_file_name, file_content)
+                messages.success(request, 'Your object is uploaded with custom name', 'info')
+            else:
+                bucket.upload_object(final_file_name, file_content)
+                messages.success(request, 'Your object is uploaded', 'success')
+            
 
-            tasks.upload_object_task.delay(final_file_name, file_content)
-
-            messages.success(request, 'Your object is uploaded with custom name', 'success')
+            
             return redirect('home:bucket')
 
         messages.error(request, 'Something went wrong! Please try again', 'danger')
