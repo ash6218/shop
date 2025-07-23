@@ -36,6 +36,7 @@ class DeleteBucketObject(IsAdminUserMixin, View):
             messages.success(request, 'your object will be deleted soon...', 'info')
         else:
             bucket.delete_object(key)
+            print("settings.CELERY_IS_ACTIVE is False")
             messages.success(request, 'your object is deleted', 'success')
         return redirect('home:bucket')
 
@@ -47,6 +48,7 @@ class DownloadBucketObject(IsAdminUserMixin, View):
             messages.success(request, 'your object will be downloaded soon...', 'info')
         else:
             bucket.download_object(key)
+            print("settings.CELERY_IS_ACTIVE is False")
             messages.success(request, 'your object is downloaded', 'success')
         return redirect('home:bucket')
 
@@ -85,9 +87,8 @@ class UploadImageView(IsAdminUserMixin, View):
                 messages.success(request, 'Your object is uploaded with custom name', 'info')
             else:
                 bucket.upload_object(final_file_name, file_content)
+                print("settings.CELERY_IS_ACTIVE is False")
                 messages.success(request, 'Your object is uploaded', 'success')
-            
-
             
             return redirect('home:bucket')
 

@@ -122,6 +122,7 @@ class UserOtpLoginView(View):
                 send_otp_code_task.delay(form.cleaned_data['phone_number'], random_code)
             else:
                 send_otp_code(form.cleaned_data['phone_number'], random_code)
+                print("settings.CELERY_IS_ACTIVE is False")
             OtpCode.objects.create(phone_number=form.cleaned_data['phone_number'], code=random_code)
             request.session['user_otplogin_info'] = {'phone_number' : form.cleaned_data['phone_number']}
             messages.success(request, 'we sent you a code.', 'success')

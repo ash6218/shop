@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, OtpCode
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -27,11 +27,12 @@ class UserCreationForm(forms.ModelForm): # for creating a new form in admin pane
             raise ValidationError('This email already exists.')
         return email
     
-    def clean_phone(self):
+    def clean_phone_number(self):
         phone_number = self.cleaned_data['phone_number']
         user = User.objects.filter(phone_number=phone_number).exists()
         if user:
             raise ValidationError('This phone number already exists.')
+        OtpCode.objects.filter(phone_number=phone_number).delete()
         return phone_number
 
     def save(self, commit=True):
@@ -66,3 +67,8 @@ class UserLoginForm(forms.Form):
 
 class UserOtpLoginForm(forms.Form):
     phone_number = forms.CharField(max_length=11)
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        OtpCode.objects.filter(phone_number=phone_number).delete()
+        return phone_number
