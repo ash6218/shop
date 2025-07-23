@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import Product, UploadImage
+from .models import Product, UploadImage, Category
 from . import tasks
 from django.contrib import messages
 from .forms import ImageUploadForm
@@ -10,9 +10,16 @@ from utils import IsAdminUserMixin
 from shop import settings
 
 class HomeView(View):
-    def get(self, request):
+    """we have 2 different urls that links to this view, the main urls wont send 
+    category_slug and it ends with an error, unless we use category_slug=None"""
+    def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
-        return render(request, 'home/home.html', {'products':products})
+        categories = Category.objects.filter(is_sub=False)
+        #sub_categories = Category.objects.filter(is_sub=True)
+        if category_slug:
+            category = Category.objects.get(slug=category_slug)
+            products = products.filter(category=category)
+        return render(request, 'home/home.html', {'products':products, 'categories':categories, })
 
 
 class ProductDetailView(IsAdminUserMixin, View):
