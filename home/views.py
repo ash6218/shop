@@ -1,13 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
-from .models import Product, UploadImage, Category
+from .models import Product, BucketPics, Category
 from . import tasks
 from django.contrib import messages
 from .forms import ImageUploadForm
-from bucket import bucket
+from bucket import bucket, list_s3_images
 import os
 from utils import IsAdminUserMixin
 from shop import settings
+from orders.forms import CartAddForm
+
 
 class HomeView(View):
     """we have 2 different urls that links to this view, the main urls wont send 
@@ -23,9 +25,11 @@ class HomeView(View):
 
 
 class ProductDetailView(IsAdminUserMixin, View):
+    form_class = CartAddForm
     def get(self, request, slug):
         product = Product.objects.get(slug=slug)
-        return render(request, 'home/detail.html', {'product':product})
+        form = self.form_class
+        return render(request, 'home/detail.html', {'product':product, 'form':form})
     
 
 class BucketHome(IsAdminUserMixin, View):
@@ -101,3 +105,10 @@ class UploadImageView(IsAdminUserMixin, View):
 
         messages.error(request, 'Something went wrong! Please try again', 'danger')
         return render(request, self.template_name, {'form': form})
+    
+class BucketPicsView(IsAdminUserMixin, View):
+    template_name = 'home/bucketpics.html'
+    def get(self, request):
+        pics = list_s3_images()
+        return render(request, self.template_name, {'pics':pics})
+    

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% for pic in pics %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                    <img src="{{ pic.url }}" class="card-img-top" alt="{{ pic.key }}">
+                    <div class="card-body">
+                        <p class="card-text">{{ pic.key }}</p>
+                        <a href="{{ pic.url }}" class="btn btn-sm btn-primary" download>download</a>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+

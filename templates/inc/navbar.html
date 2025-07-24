@@ -13,6 +13,7 @@
       {% if request.user.is_admin %}
         <a class="nav-link active" href="{% url 'home:bucket' %}">Bucket</a>
         <a class="nav-link active" href="{% url 'home:upload' %}">Upload</a>
+        <a class="nav-link active" href="{% url 'home:bucket_pics' %}">Bucket Pictures</a>
       {% endif %}
       </div>
     </div>

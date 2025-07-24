@@ -50,3 +50,6 @@ def image_preview(self):
     return "-"
 image_preview.short_description = "Preview"
 Product.image_preview = image_preview
+
+class BucketPics(models.Model):
+    image_url = models.URLField(max_length=500, blank=True, null=True)

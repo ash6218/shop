@@ -55,5 +55,6 @@ def list_s3_images():
         key = obj['Key']
         if key.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
             url = f"{settings.AWS_S3_ENDPOINT_URL}/{settings.AWS_STORAGE_BUCKET_NAME}/{key}"
-            images.append((url, key))  # (value, label)
+            #images.append((url, key))  # (value, label)
+            images.append({'url':url, 'key':key})
     return images
