@@ -26,4 +26,4 @@ urlpatterns = [
     path('orders/', include('orders.urls', namespace='orders')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# dont forget to delete "+ static(settings..." in prodution mode
+# dont forget to delete "+ static(settings..." in production mode

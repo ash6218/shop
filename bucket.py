@@ -50,11 +50,11 @@ def list_s3_images():
         endpoint_url=settings.AWS_S3_ENDPOINT_URL,
     )
     response = s3.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
-    images = []
+    images1, images2 = [], []
     for obj in response.get('Contents', []):
         key = obj['Key']
         if key.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
             url = f"{settings.AWS_S3_ENDPOINT_URL}/{settings.AWS_STORAGE_BUCKET_NAME}/{key}"
-            #images.append((url, key))  # (value, label)
-            images.append({'url':url, 'key':key})
-    return images
+            images1.append((url, key))  # (value, label)
+            images2.append({'url':url, 'key':key})
+    return images1, images2

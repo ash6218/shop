@@ -10,6 +10,7 @@
       <th scope="col">Unit Price</th>
       <th scope="col">Quantity</th>
       <th scope="col">Total Price</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -19,9 +20,16 @@
       <td>{{ item.product }}</td>
       <td>{{ item.price }}</td>
       <td>{{ item.quantity}}</td>
-      <td><a>{{ item.total_price}}</a></td>
+      <td>{{ item.total_price}}</td>
+      <td><a href="{% url 'orders:cart_remove' item.product.id %}">Remove</a></td>
     </tr>
     {% endfor %}
+    <tr>
+      <td colspan="4">Total Cart Price</td>
+      <td colspan="2">{{cart.get_total_price}}</td> 
+    </tr>
   </tbody>
 </table>
+<br\>
+<a class="btn btn-primary" href="{% url 'orders:order_create' %}">Checkout</a>
 {% endblock %}

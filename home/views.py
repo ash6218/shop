@@ -109,6 +109,6 @@ class UploadImageView(IsAdminUserMixin, View):
 class BucketPicsView(IsAdminUserMixin, View):
     template_name = 'home/bucketpics.html'
     def get(self, request):
-        pics = list_s3_images()
+        pics = list_s3_images()[1]
         return render(request, self.template_name, {'pics':pics})
     

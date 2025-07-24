@@ -31,7 +31,7 @@ class ProductAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        image_choices = list_s3_images()
+        image_choices = list_s3_images()[0]
         self.fields['image_url'].choices = [('', '---------')] + image_choices
 
 @admin.register(Product)
