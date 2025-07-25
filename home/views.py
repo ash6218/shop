@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, BucketPics, Category
+from .models import Product, Category
 from . import tasks
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ImageUploadForm
 from bucket import bucket, list_s3_images
 import os
@@ -24,7 +25,7 @@ class HomeView(View):
         return render(request, 'home/home.html', {'products':products, 'categories':categories, })
 
 
-class ProductDetailView(IsAdminUserMixin, View):
+class ProductDetailView(LoginRequiredMixin, View):
     form_class = CartAddForm
     def get(self, request, slug):
         product = Product.objects.get(slug=slug)

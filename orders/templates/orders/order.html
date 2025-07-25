@@ -2,5 +2,19 @@
 
 {% block content %}
     <h3>Checkout</h3>
-    <p>Total Price : {{ order.get_total_price }}</p>
+    <p>Total Price : {{ order.get_total_price }} </p>
+    <br\><br\>
+
+    {% if not order.discount %}
+    <form action="" method="post" class="btn btn-warning">
+        {% csrf_token %}
+        enter your coupon here
+             
+        {{ form.as_p}}
+        <input type="submit" value="Apply">
+    </form>
+    {% endif %}
+    <br\><br\>
+    <a class="btn btn-primary" href="{% url 'orders:order_pay' order.id %}">Pay</a>
+
 {% endblock %}

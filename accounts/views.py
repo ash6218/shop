@@ -155,7 +155,8 @@ class UserLoginVerifyCodeView(View):
             phone = user_session['phone_number']
             code_instance = OtpCode.objects.get(phone_number = phone)
             expire_check = datetime.now(pytz.timezone('UTC')) - code_instance.created
-            user = User.objects.filter(phone_number=phone).first() # this is important to get None instead of DoesNotExsitsError, also no leakage!
+            user = User.objects.filter(phone_number=phone).first() # this is important to get None instead of DoesNotExsitsError,
+            # also no leakage! or we can use try-except block.
             if user is not None and code_instance.code == form.cleaned_data['code'] and expire_check < timedelta(seconds=expiration_seconds):
                 login(request,user)
                 code_instance.delete()
