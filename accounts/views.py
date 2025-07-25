@@ -92,7 +92,7 @@ class UserLoginView(View):
             user = authenticate(request, phone_number=cd['phone_number'], password=cd['password'])
             if user is not None:
                 login(request,user)
-                messages.success(request,f'welcome {user.email}. you logged in successfully', 'success')
+                messages.success(request,f'welcome {user.full_name}, you just logged in successfully', 'success')
                 if self.next:
                     return redirect(self.next)
                 return redirect('home:home')
