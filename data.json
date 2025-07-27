@@ -1,0 +1,1 @@
+[{"model": "accounts.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$1000000$2k9FnHar1IAe77pIiHfWzg$Xgncn3o2QspnIhFzV1BxD+UL8+xifaSfcJlTBwuTi5c=", "last_login": null, "is_superuser": true, "email": "1234567@gmail.com", "phone_number": "09121234567", "full_name": "z m", "is_active": true, "is_admin": true, "groups": [], "user_permissions": []}}]

@@ -26,6 +26,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(phone_number, email, full_name, password)
         # as create_super_user have all the elements of create_user, we called the first methos here.
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 

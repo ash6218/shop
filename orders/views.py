@@ -4,7 +4,7 @@ from .cart import Cart
 from home.models import Product
 from .forms import CartAddForm, CouponForm
 from .models import Order, OrderItem, Coupon
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib import messages
 from django.conf import settings
 import requests, json
