@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.html import mark_safe
+from ckeditor.fields import RichTextField
+
 
 class Category(models.Model):
     sub_category = models.ForeignKey('self', on_delete=models.CASCADE, related_name='scategory', null=True, blank=True)
@@ -25,7 +27,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     #image = models.ImageField(upload_to='products/')
     image_url = models.URLField(max_length=500, blank=True, null=True)
-    description = models.TextField()
+    description = RichTextField()
     price = models.IntegerField()
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)

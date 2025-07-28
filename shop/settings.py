@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'django_celery_beat',
     'storages',
+    'ckeditor',
 ]   
 
 MIDDLEWARE = [
@@ -189,3 +190,8 @@ SANDBOX = True
 
 # CAN CHANGE SUPERUSER FIELD
 CCSF = False
+
+# CK_EDITOR CONFIGS
+CKEDITOR_CONFIGS = {
+    'default':{'toolbar': 'full'},
+}

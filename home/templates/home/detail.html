@@ -4,10 +4,10 @@
 {% block content %}
     <h2>{{ product.name }}</h2>
     <small>{{ product.created }}</small><br>
-    <p>{{ product.price }} Toman</p><br>
+    <p>{{ product.price }} $</p><br>
     <img src="{{ product.image_url }}" alt="{{ product.name }}" style="max-width: 700px;">
     <br>
-    <p>{{ product.description }}</p><br/><br/>
+    <p>{{ product.description|safe }}</p><br/><br/>
 
     <form action="{% url 'orders:cart_add' product.id %}" method="post">
         {% csrf_token %}
