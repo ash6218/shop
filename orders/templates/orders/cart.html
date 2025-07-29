@@ -21,7 +21,7 @@
       <td>{{ item.price }}</td>
       <td>{{ item.quantity}}</td>
       <td>{{ item.total_price}}</td>
-      <td><a href="{% url 'orders:cart_remove' item.product.id %}">Remove</a></td>
+      <td><a href="{% url 'orders:cart_remove' item.product.id %}" class="btn btn-danger">Remove</a></td>
     </tr>
     {% endfor %}
     <tr>
@@ -32,4 +32,6 @@
 </table>
 <br\>
 <a class="btn btn-primary" href="{% url 'orders:order_create' %}">Checkout</a>
+<br><br><br\>
+<a class="btn btn-info" href="{% url 'orders:unpaid_orders' %}">you have unpaid orders</a>
 {% endblock %}

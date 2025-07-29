@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Unpiad Orders</h3>
+    <br><br\>
+    {% for order in orders %}
+        <a class="btn btn-danger" href="{% url 'orders:order_detail' order.id %}">order ID: {{order.id}}  - price: {{ order.get_total_price }}</a>
+        <br><br\>
+        <br><br\>
+    {% endfor %}
+{% endblock %}

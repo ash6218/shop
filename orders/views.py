@@ -168,3 +168,9 @@ class OrderVerifyView(LoginRequiredMixin, View):
             else:
                 return {'status': False, 'code': str(response['Status'])}
         return response"""
+
+class UnpiadOrderView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        orders = user.orders.filter(user=user, paid=False)
+        return render(request, 'orders/unpaid_orders.html', {'orders':orders})

@@ -11,8 +11,7 @@
       <th scope="col">Name</th>
       <th scope="col">Last Modified</th>
       <th scope="col">Size</th>
-      <th scope="col">Download</th>
-      <th scope="col">Delete</th>
+      <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -22,8 +21,8 @@
       <td>{{ obj.Key }}</td>
       <td>{{ obj.LastModified|timesince }} ago</td>
       <td>{{ obj.Size|filesizeformat }}</td>
-      <td><a href="{% url 'home:download_obj_bucket' obj.Key %}">Download</a></td>
-      <td><a href="{% url 'home:delete_obj_bucket' obj.Key %}">Delete</a></td>
+      <td><a href="{% url 'home:download_obj_bucket' obj.Key %}" class="btn btn-primary">Download</a>
+      <a href="{% url 'home:delete_obj_bucket' obj.Key %}" class="btn btn-danger">Delete</a></td>
     </tr>
     {% endfor %}
   </tbody>

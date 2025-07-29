@@ -6,7 +6,13 @@
           <a class="nav-link active" href="{% url 'home:home' %}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-info" href="{% url 'orders:cart' %}">Cart {{ cart_cp|length }}</a>
+          <a type="button" class="btn btn-primary position-relative" href="{% url 'orders:cart' %}">
+            Cart
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ cart_cp|length }}
+              <span class="visually-hidden">unread messages</span>
+            </span>
+          </a>
         </li>
         </ul>
 
@@ -14,6 +20,7 @@
           {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="btn btn-secondary" href="#">{{ request.user.full_name }}</a>
+            
           </li>
           {% if request.user.is_superuser %}
           <li class="nav-item">
