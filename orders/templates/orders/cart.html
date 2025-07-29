@@ -25,7 +25,7 @@
     </tr>
     {% endfor %}
     <tr>
-      <td colspan="4">Total Cart Price</td>
+      <td colspan="4">{% if cart.get_total_price is not 0 %} Total Cart Price {% else %} your Cart is empty {% endif %}</td>
       <td colspan="2">{{cart.get_total_price}}</td> 
     </tr>
   </tbody>

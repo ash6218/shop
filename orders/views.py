@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from datetime import datetime
 
 
-class CartView(View,):
+class CartView(View):
     def get(self, request, order_id=None):
         cart = Cart(request) # we should use __iter__ method in cart.py so we can send an iterable value to cart.html
         return render(request, 'orders/cart.html', {'cart':cart})
@@ -169,8 +169,14 @@ class OrderVerifyView(LoginRequiredMixin, View):
                 return {'status': False, 'code': str(response['Status'])}
         return response"""
 
-class UnpiadOrderView(LoginRequiredMixin, View):
+class UnpaidOrderView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        orders = user.orders.filter(user=user, paid=False)
+        orders = Order.objects.filter(user=user, paid=False)
         return render(request, 'orders/unpaid_orders.html', {'orders':orders})
+
+class UnpaidDetailView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        order = Order.objects.get(id=order_id)
+        orderitems = order.items.all()
+        return render(request, 'orders/unpaid_detail.html', {'order':order, 'orderitems':orderitems})
