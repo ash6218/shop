@@ -171,3 +171,8 @@ class UserLoginVerifyCodeView(View):
             messages.error(request, 'Username or OTP-Code is not correct!', 'warning')
             return redirect('accounts:login_verify_code')
         return render(request, self.template_name, {'form':form})
+
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request):
+        #user = request.user
+        return render(request, 'accounts/profile.html')

@@ -19,7 +19,7 @@
         <ul class="navbar-nav ms-auto mb-2 mb-lg-1">
           {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a class="btn btn-secondary" href="#">{{ request.user.full_name }}</a>
+            <a class="btn btn-secondary" href="{% url 'accounts:profile' %}">{{ request.user.full_name }}</a>
             
           </li>
           {% if request.user.is_superuser %}

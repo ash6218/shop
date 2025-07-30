@@ -8,5 +8,6 @@
         <input type="submit" value="Login">
     </form>
     <br><br>
-    <p>Problem logging? use</p><a href="{% url 'accounts:user_otplogin' %}">OTP Login</a>
+    <b>Problem logging in? use </b>
+    <a href="{% url 'accounts:user_otplogin' %}" class="btn btn-success">OTP Login</a>
 {% endblock %}
