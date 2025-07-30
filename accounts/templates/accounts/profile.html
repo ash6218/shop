@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Profile</h2><br>
-    <a href="#" class="btn btn-success">Update Profile</a>
-    <a href="{% url 'orders:unpaid_orders' %}" class="btn btn-danger">Unpaid Orders</a>
+    <a href="{% url 'accounts:update_profile' %}" class="btn btn-info">Update Profile</a>
+    <a href="{% url 'accounts:change_password' %}" class="btn btn-warning">Change Password</a>
     <br><br>
-    <b>Name: {{ request.user.full_name }}</b><br>
-    <b>Email: {{ request.user.email }}</b><br>
-    <b>Phone Number: {{ request.user.phone_number }}</b><br>
+    <a href="{% url 'orders:unpaid_orders' %}" class="btn btn-danger">Unpaid Orders</a>
+    <a href="#" class="btn btn-success">paid Orders</a>
+    <br><br><br>
+    <h2>Profile</h2><br>
+    <b>Name: {{ request.user.full_name }}</b><br><br>
+    <b>Email: {{ request.user.email }}</b><br><br>
+    <b>Phone Number: {{ request.user.phone_number }}</b><br><br>
 {% endblock %}

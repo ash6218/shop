@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm
+from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserUpdateProfileForm
 import random, pytz
 from utils import send_otp_code
-from .models import OtpCode, User
+from .models import OtpCode, User, UserUpdateProfile
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth import login, logout, authenticate
@@ -174,5 +174,35 @@ class UserLoginVerifyCodeView(View):
 
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        #user = request.user
         return render(request, 'accounts/profile.html')
+    
+class UserUpdateProfileView(LoginRequiredMixin, View):
+    form_class = UserUpdateProfileForm
+    template_name = 'accounts/update_profile.html'
+    def get(self, request):
+        form = UserUpdateProfile.objects.filter(email=request.user.email).first()
+        if form is None:
+            form = UserUpdateProfile.objects.create(email=request.user.email, phone_number=request.user.phone_number, full_name=request.user.full_name)
+        form = UserUpdateProfileForm(instance=form)
+        form.email = request.user.email
+        form.phone_number=request.user.phone_number
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, instance=request.user)
+        if form.is_valid():
+            messages.success(request, 'Your profile has been updated', 'success')
+            return redirect('accounts/profile.html')
+        return render(request, self.template_name, {'form':form})
+    
+class UserChangePasswordView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = self.form_class(instance=request.user)
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, instance=request.user)
+        if form.is_valid():
+            messages.success(request, 'Your profile has been updated', 'success')
+            return redirect('accounts/profile.html')
+        return render(request, self.template_name, {'form':form})

@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, OtpCode
+from .models import User, OtpCode, UserUpdateProfile
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -72,3 +72,18 @@ class UserOtpLoginForm(forms.Form):
         phone_number = self.cleaned_data['phone_number']
         OtpCode.objects.filter(phone_number=phone_number).delete()
         return phone_number
+    
+class UserUpdateProfileForm(forms.ModelForm):
+    email = forms.EmailField(disabled=False)
+    phone_number = forms.CharField(max_length=11,label='phone number', disabled=True)
+    class Meta:
+        model = UserUpdateProfile
+        fields = ['full_name', 'address', 'postal_code', 'birthday']
+        ordering = ['email','phone_number', 'full_name', 'address', 'postal_code', 'birthday']
+    """
+    email = forms.EmailField(disabled=False)
+    phone_number = forms.CharField(max_length=11,label='phone number', disabled=False)
+    full_name = forms.CharField(label='full name')
+    address = forms.Textarea()
+    postal_code = forms.CharField(label='postal code')
+    birthday = forms.DateField()"""

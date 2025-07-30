@@ -29,3 +29,11 @@ class OtpCode(models.Model):
 
     def __str__(self):
         return f'{self.phone_number} - {self.code} - {self.created}'
+    
+class UserUpdateProfile(models.Model):
+    email = models.EmailField(max_length=255)
+    phone_number = models.CharField(max_length=11)
+    full_name = models.CharField(max_length=100)
+    address = models.TextField(max_length=1000, null=True, blank=True, default="-")
+    postal_code = models.CharField(max_length=10, null=True, blank=True, default="-")
+    birthday = models.DateField(null=True, blank=True, default="1990-01-01")
