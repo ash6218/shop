@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm
+from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm, UserUpdateProfileForm
 import random, pytz
 from utils import send_otp_code
 from .models import OtpCode, User
@@ -179,15 +179,21 @@ class UserProfileView(LoginRequiredMixin, View):
         return render(request, 'accounts/profile.html')
     
 class UserUpdateProfileView(LoginRequiredMixin, View):
+    form_class = UserUpdateProfileForm
     template_name = 'accounts/update_profile.html'
     def get(self, request):
-        pass
+        form = self.form_class(instance=request.user)
+        return render(request, self.template_name, {'form':form})
 
     def post(self, request):
-        form = self.form_class(request.POST, instance=request.user)
+        form = self.form_class(request.POST)
         if form.is_valid():
+            cd = form.cleaned_data
+            request.user.address, request.user.postal_code = cd['address'], cd['postal_code']
+            request.user.national_id, request.user.birthday = cd['national_id'], cd['birthday']
+            request.user.save()
             messages.success(request, 'Your profile has been updated', 'success')
-            return redirect('accounts/profile.html')
+            return redirect('accounts:profile')
         return render(request, self.template_name, {'form':form})
     
 class UserChangePasswordView(LoginRequiredMixin, View):

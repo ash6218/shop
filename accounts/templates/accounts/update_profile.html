@@ -2,9 +2,13 @@
 
 {% block content %}
     <h2>Update Profile</h2><br>
+    <b>Email :  {{request.user.email}}</b><br><br>
+    <b>Phone Number :  {{request.user.phone_number}}</b><br><br><br>
+    <b>
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Update">
     </form>
+    </b>
 {% endblock %}

@@ -80,3 +80,8 @@ class UserChagePasswordForm(forms.Form):
         elif len(p1)<8 or len(p2)<8:
             raise ValidationError('Password must have at least 8 characters!')
         return p2
+    
+class UserUpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [ 'full_name', 'address', 'postal_code', 'national_id', 'birthday']

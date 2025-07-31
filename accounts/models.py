@@ -8,6 +8,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    address = models.TextField(max_length=1000, null=True, blank=True, default="")
+    postal_code = models.CharField(max_length=10, null=True, blank=True, default="")
+    national_id = models.CharField(max_length=10, null=True, blank=True, default="")
+    birthday = models.DateField(null=True, blank=True, default="1990-01-01")
 
     objects = UserManager()
 
