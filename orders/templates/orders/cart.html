@@ -31,7 +31,8 @@
   </tbody>
 </table>
 <br\>
-<a class="btn btn-primary" href="{% url 'orders:order_create' %}">Checkout</a>
+<a class="{% if cart.get_total_price is 0 %} disabled {% endif %} btn btn-primary " href="{% url 'orders:order_create' %}">Checkout</a>
 <br><br><br\>
-<a class="btn btn-info" href="{% url 'orders:unpaid_orders' %}">you have unpaid orders</a>
+
+<a class="btn btn-danger" href="{% url 'orders:unpaid_orders' %}">unpaid orders</a>
 {% endblock %}

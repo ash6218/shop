@@ -4,10 +4,11 @@
     <h3>Unpiad Orders</h3>
     <br><br\>
     {% for order in orders %}
-        <a class="btn btn-danger" href="{% url 'orders:unpaid_detail' order.id %}">order ID: {{order.id}}  - price: {{ order.get_total_price }}</a>
-        <a class="btn btn-primary" href="{% url 'orders:unpaid_detail' order.id %}">PAY order number {{order.id}} with price {{ order.get_total_price }} $</a>
+        <a class="btn btn-danger" href="{% url 'orders:unpaid_detail' order.id %}">order number {{order.id}} with price {{ order.get_total_price }} $</a>
         <br><br\>
         <br><br\>
         <br><br\>
+    {% empty %}
+        <b> ✅ You dont have any unpaid orders</b>
     {% endfor %}
 {% endblock %}

@@ -23,7 +23,7 @@ class UserRegisterView(View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            random_code = random.randint(10000, 99999)
+            random_code = random.randint(1000, 9999)
             send_otp_code(form.cleaned_data['phone_number'], random_code)
             OtpCode.objects.create(phone_number=form.cleaned_data['phone_number'], code=random_code)
             request.session['user_registration_info'] = {
@@ -191,7 +191,7 @@ class UserUpdateProfileView(LoginRequiredMixin, View):
             cd = form.cleaned_data
             request.user.address, request.user.postal_code = cd['address'], cd['postal_code']
             request.user.national_id, request.user.birthday = cd['national_id'], cd['birthday']
-            request.user.save()
+            form.save()
             messages.success(request, 'Your profile has been updated', 'success')
             return redirect('accounts:profile')
         return render(request, self.template_name, {'form':form})
