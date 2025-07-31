@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Update Profile</h2><br>
-    <b>Email :  {{request.user.email}}</b><br><br>
-    <b>Phone Number :  {{request.user.phone_number}}</b><br><br><br>
+<h2>Update Profile</h2><br>
+
+<form>
+  <div class="mb-6">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input type="email" class="form-control" value="{{request.user.email}}" readonly>
+    </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Phone Number</label>
+    <input class="disabled form-control" value="{{request.user.phone_number}}" readonly>
+  </div>
+</form>
+
     <b>
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Update">
+        <input type="submit" value="Update" class="btn btn-primary">
     </form>
     </b>
 {% endblock %}

@@ -191,7 +191,7 @@ class UserUpdateProfileView(LoginRequiredMixin, View):
             cd = form.cleaned_data
             request.user.address, request.user.postal_code = cd['address'], cd['postal_code']
             request.user.national_id, request.user.birthday = cd['national_id'], cd['birthday']
-            form.save()
+            request.user.save()
             messages.success(request, 'Your profile has been updated', 'success')
             return redirect('accounts:profile')
         return render(request, self.template_name, {'form':form})

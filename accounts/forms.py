@@ -85,3 +85,8 @@ class UserUpdateProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = [ 'full_name', 'address', 'postal_code', 'national_id', 'birthday']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

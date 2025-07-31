@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager
+from django.core.validators import RegexValidator
+
+only_digits = RegexValidator(regex=r'^\d+$', message='please enter just numbers')
+ten_digits = RegexValidator(regex=r'^\d{10}$', message='please enter exactly 10 digits number')
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
@@ -9,8 +13,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     address = models.TextField(max_length=1000, null=True, blank=True, default="")
-    postal_code = models.CharField(max_length=10, null=True, blank=True, default="")
-    national_id = models.CharField(max_length=10, null=True, blank=True, default="")
+    postal_code = models.CharField(max_length=10, null=True, blank=True, default="", validators=[ten_digits])
+    national_id = models.CharField(max_length=10, null=True, blank=True, default="", validators=[ten_digits])
     birthday = models.DateField(null=True, blank=True, default="1990-01-01")
 
     objects = UserManager()

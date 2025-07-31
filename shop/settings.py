@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u0%p%o8gmfz591y^-7zq0^81kmd675x*s=aw#(#eb0z35i#k=w'
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -90,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'psdb',
         'USER': 'postgres',
-        'PASSWORD':'root',
+        'PASSWORD':config('DATABASE_PASSWORD'),
         'HOST':'127.0.0.1',
         'PORT':'5432',
 
@@ -159,18 +161,10 @@ STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-# ParsPack storages
-AWS_ACCESS_KEY_ID = 'EJb9wmgWaXK8IPAB'
-AWS_SECRET_ACCESS_KEY = 'nIkAWhUKjO3EFvrUmnEcKbwT63Kh7PdK'
-AWS_S3_ENDPOINT_URL = 'https://c999265.parspack.net'
-AWS_STORAGE_BUCKET_NAME = 'c999265'
-"""
-# ArvanCloud storages
-AWS_ACCESS_KEY_ID = '50b1cc4f-5e03-4e07-b338-180bf51e38d8'
-AWS_SECRET_ACCESS_KEY = 'c699d522bb40716be90aabf22e388cd68ecb82c244624c67c766ee730c67ac82'
-AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.ir'
-AWS_STORAGE_BUCKET_NAME = 'shop-ash'
-"""
+
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_S3_ENDPOINT_URL = config('AWS_S3_ENDPOINT_URL')
 AWS_S3_REGION_NAME = 'default'
 AWS_QUERYSTRING_AUTH = False
 AWS_SERVICE_NAME = 's3'
@@ -185,7 +179,7 @@ CELERY_IS_ACTIVE = True
 
 
 # ZARRINPAL - SANDBOX MODE
-MERCHANT = '107ba161-13a7-47f1-b92d-54d6f7fad277'
+MERCHANT = config('MERCHANT')
 SANDBOX = True
 
 # CAN CHANGE SUPERUSER FIELD
@@ -198,9 +192,9 @@ CKEDITOR_CONFIGS = {
 
 # Google account (forget password)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ash6218@gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_PASSWORD = 'wnsmkrvzrbiqykhp'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Ash1.ir'
