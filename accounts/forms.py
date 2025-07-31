@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, OtpCode, UserUpdateProfile
+from .models import User, OtpCode
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -50,14 +50,6 @@ class UserChangeForm(forms.ModelForm): # for changing a new form in admin panel
         fields = ['email', 'phone_number', 'full_name', 'password', 'last_login']
         # last_login is already exists in our User model
 
-"""
-class UserRegistrationForm(forms.Form):
-    email = forms.EmailField()
-    full_name = forms.CharField(label='full name')
-    phone = forms.CharField(max_length=11)
-    password = forms.CharField(widget=forms.PasswordInput)
-""" # didnt use it, as we already had UserCreationForm and used it instead
-
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()
 
@@ -72,18 +64,19 @@ class UserOtpLoginForm(forms.Form):
         phone_number = self.cleaned_data['phone_number']
         OtpCode.objects.filter(phone_number=phone_number).delete()
         return phone_number
+ 
+class UserChagePasswordForm(forms.Form):
+    password = forms.CharField(label='old password', widget=forms.PasswordInput)
+    password1 = forms.CharField(label='new password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='confirm new password', widget=forms.PasswordInput)
     
-class UserUpdateProfileForm(forms.ModelForm):
-    email = forms.EmailField(disabled=False)
-    phone_number = forms.CharField(max_length=11,label='phone number', disabled=True)
-    class Meta:
-        model = UserUpdateProfile
-        fields = ['full_name', 'address', 'postal_code', 'birthday']
-        ordering = ['email','phone_number', 'full_name', 'address', 'postal_code', 'birthday']
-    """
-    email = forms.EmailField(disabled=False)
-    phone_number = forms.CharField(max_length=11,label='phone number', disabled=False)
-    full_name = forms.CharField(label='full name')
-    address = forms.Textarea()
-    postal_code = forms.CharField(label='postal code')
-    birthday = forms.DateField()"""
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        p1 = cd['password1']
+        p2 = cd['password2']
+        if p1 and p2 and p1!=p2:
+            raise ValidationError('Passwords must match!')
+        elif len(p1)<8 or len(p2)<8:
+            raise ValidationError('Password must have at least 8 characters!')
+        return p2

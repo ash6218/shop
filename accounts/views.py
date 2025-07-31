@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserUpdateProfileForm
+from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm
 import random, pytz
 from utils import send_otp_code
-from .models import OtpCode, User, UserUpdateProfile
+from .models import OtpCode, User
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .tasks import send_otp_code_task
 from shop import settings
+from django.contrib.auth import views as auth_views, update_session_auth_hash
+from django.urls import reverse_lazy
 
 class UserRegisterView(View):
     form_class = UserCreationForm
@@ -177,16 +179,9 @@ class UserProfileView(LoginRequiredMixin, View):
         return render(request, 'accounts/profile.html')
     
 class UserUpdateProfileView(LoginRequiredMixin, View):
-    form_class = UserUpdateProfileForm
     template_name = 'accounts/update_profile.html'
     def get(self, request):
-        form = UserUpdateProfile.objects.filter(email=request.user.email).first()
-        if form is None:
-            form = UserUpdateProfile.objects.create(email=request.user.email, phone_number=request.user.phone_number, full_name=request.user.full_name)
-        form = UserUpdateProfileForm(instance=form)
-        form.email = request.user.email
-        form.phone_number=request.user.phone_number
-        return render(request, self.template_name, {'form':form})
+        pass
 
     def post(self, request):
         form = self.form_class(request.POST, instance=request.user)
@@ -196,13 +191,37 @@ class UserUpdateProfileView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form':form})
     
 class UserChangePasswordView(LoginRequiredMixin, View):
-    def get(self, request):
-        form = self.form_class(instance=request.user)
+    template_name = 'accounts/change_password.html'
+    def get(self, requset):
+        form = UserChagePasswordForm()
+        return render(requset, self.template_name, {'form':form})
+    
+    def post(self, request):
+        form = UserChagePasswordForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, phone_number=request.user.phone_number, password=cd['password'])
+            if user is not None and cd['password1']==cd['password2']:
+                request.user.set_password(cd['password2'])
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+                messages.success(request,f'welcome {user.full_name}, your password changed successfully', 'success')
+                return redirect('home:home')
+            messages.error(request, 'old Password is not correct!', 'warning')
         return render(request, self.template_name, {'form':form})
 
-    def post(self, request):
-        form = self.form_class(request.POST, instance=request.user)
-        if form.is_valid():
-            messages.success(request, 'Your profile has been updated', 'success')
-            return redirect('accounts/profile.html')
-        return render(request, self.template_name, {'form':form})
+    
+class UserPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password_reset_email.html'
+
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
+
+class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    success_url = reverse_lazy('accounts:password_reset_complete')
+
+class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'

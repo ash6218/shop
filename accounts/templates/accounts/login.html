@@ -9,5 +9,8 @@
     </form>
     <br><br>
     <b>Problem logging in? use </b>
-    <a href="{% url 'accounts:user_otplogin' %}" class="btn btn-success">OTP Login</a>
+    <a href="{% url 'accounts:user_otplogin' %}" class="btn btn-info">OTP Login</a>
+    <br><br>
+    <b> or </b>
+    <a href="{% url 'accounts:password_reset' %}" class="btn btn-info">Reset Password With Email</a>
 {% endblock %}
