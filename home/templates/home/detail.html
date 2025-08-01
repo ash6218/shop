@@ -2,12 +2,14 @@
 {% load static %}
 
 {% block content %}
-    <h2>{{ product.name }}</h2>
-    <small>{{ product.created }}</small><br>
-    <p>{{ product.price }} $</p><br>
-    <img src="{{ product.image_url }}" alt="{{ product.name }}" style="max-width: 700px;">
-    <br>
-    <p>{{ product.description|safe }}</p><br/><br/>
+    <div class="card mb-3">
+    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="max-width: 1200px;">
+    <div class="card-body">
+        <h4 class="card-title">{{ product.name }}</h4>
+        <p class="card-text">description: {{ product.description|safe }}</p>
+        <b>price: {{ product.price }} $</b>
+        <p class="card-text"><small class="text-body-secondary">{{ product.created }}</small></p><br>
+    </div>
 
     <form action="{% url 'orders:cart_add' product.id %}" method="post">
         {% csrf_token %}
@@ -15,13 +17,26 @@
         <input type="submit" value="Add to Cart" class="btn btn-primary">
     </form>
     <br/><hr><br/>
+
     {% for comment in comments %}
-    <small>{{ comment.user.full_name }} - {{ comment.updated|timesince }} ago </small>
-        <h5>{{ comment.title }}</h5>
-        <p>{{ comment.text }}</p>
-        <p></p>
-        <hr>
+    <div class="card">
+        <div class="card-header">
+            {{ comment.title }}
+        </div>
+        <div class="card-body">
+            <figure>
+            <blockquote class="blockquote">
+                <p>{{ comment.text }}</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                {{ comment.user.full_name }} - {{ comment.updated|timesince }} ago 
+            </figcaption>
+            </figure>
+        </div>
+    </div>
+    <br/>
     {% endfor %}
+
     <br/><br/>
     <form action="" method="post">
         {% csrf_token %}

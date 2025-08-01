@@ -189,7 +189,7 @@ class UserUpdateProfileView(LoginRequiredMixin, View):
         form = self.form_class(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            request.user.address, request.user.postal_code = cd['address'], cd['postal_code']
+            request.user.full_name, request.user.address, request.user.postal_code = cd['full_name'], cd['address'], cd['postal_code']
             request.user.national_id, request.user.birthday = cd['national_id'], cd['birthday']
             request.user.save()
             messages.success(request, 'Your profile has been updated', 'success')
