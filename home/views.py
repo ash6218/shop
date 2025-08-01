@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, Category
+from .models import Product, Category, Comment
 from . import tasks
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ImageUploadForm
+from .forms import ImageUploadForm, CommentForm
 from bucket import bucket, list_s3_images
 import os
 from utils import IsAdminUserMixin
@@ -26,11 +26,22 @@ class HomeView(View):
 
 
 class ProductDetailView(LoginRequiredMixin, View):
-    form_class = CartAddForm
+    form_class1 = CartAddForm
+    form_class2 = CommentForm
     def get(self, request, slug):
-        product = Product.objects.get(slug=slug)
-        form = self.form_class
-        return render(request, 'home/detail.html', {'product':product, 'form':form})
+        self.product = Product.objects.get(slug=slug)
+        self.form1 = self.form_class1
+        self.form2 = self.form_class2
+        comments = Comment.objects.filter(product=self.product)
+        return render(request, 'home/detail.html', {'product':self.product, 'form1':self.form1, 'form2':self.form2, 'comments':comments})
+    
+    def post(self, request, slug):
+        form2 = self.form_class2(request.POST)
+        if form2.is_valid():
+            cd = form2.cleaned_data
+            comment = Comment.objects.create(user=request.user, product=Product.objects.get(slug=slug), title=cd['title'], text=cd['text'])
+            comment.save()
+            return redirect('home:home')
     
 
 class BucketHome(IsAdminUserMixin, View):
@@ -112,4 +123,5 @@ class BucketPicsView(IsAdminUserMixin, View):
     def get(self, request):
         pics = list_s3_images()[1]
         return render(request, self.template_name, {'pics':pics})
+
     

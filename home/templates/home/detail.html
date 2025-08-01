@@ -11,8 +11,21 @@
 
     <form action="{% url 'orders:cart_add' product.id %}" method="post">
         {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Add to Cart">
+        {{form1.as_p}}
+        <input type="submit" value="Add to Cart" class="btn btn-primary">
     </form>
-    
+    <br/><hr><br/>
+    {% for comment in comments %}
+    <small>{{ comment.user.full_name }} - {{ comment.updated|timesince }} ago </small>
+        <h5>{{ comment.title }}</h5>
+        <p>{{ comment.text }}</p>
+        <p></p>
+        <hr>
+    {% endfor %}
+    <br/><br/>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form2.as_p}}
+        <input type="submit" value="send comment" class="btn btn-info">
+    </form>
 {% endblock %}

@@ -17,6 +17,7 @@ urlpatterns = [
     path('bucket/', include(bucket_urls)),
     path('bucket_pics/',views.BucketPicsView.as_view(), name='bucket_pics'),
     path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
+    
 ]
 # bucket should be higher than product_detail and delete
 # path('upload_obj/', views.UploadBucketObject.as_view(), name='upload_obj_bucket'),

@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.html import mark_safe
 from ckeditor.fields import RichTextField
+from accounts.models import User
 
 
 class Category(models.Model):
@@ -55,3 +56,11 @@ Product.image_preview = image_preview
 
 class BucketPics(models.Model):
     image_url = models.URLField(max_length=500, blank=True, null=True)
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ucomments')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='pcomments')
+    title = models.CharField(max_length=200)
+    text = models.TextField(max_length=2000)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

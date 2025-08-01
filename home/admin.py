@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product
+from .models import Category, Product, Comment
 from django.contrib import admin
 from django import forms
 from .models import Product
@@ -41,5 +41,8 @@ class ProductAdmin(admin.ModelAdmin):
     fields = ('name', 'slug', 'price', 'image_url', 'image_preview', 'description', 'category', 'available')
     raw_id_fields = ['category']
 
-
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'title', 'text', 'created', 'updated',)
+    ordering = ['updated']
 
