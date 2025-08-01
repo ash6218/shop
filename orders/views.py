@@ -180,3 +180,9 @@ class UnpaidDetailView(LoginRequiredMixin, View):
         order = Order.objects.get(id=order_id, paid=False)
         orderitems = order.items.all()
         return render(request, 'orders/unpaid_detail.html', {'order':order, 'orderitems':orderitems})
+    
+class paidOrderView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        orders = Order.objects.filter(user=user, paid=True)
+        return render(request, 'orders/paid_orders.html', {'orders':orders})

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>piad Orders</h3>
+    <br><br\>
+    {% for order in orders %}
+        <a class="btn btn-success" href="{% url 'orders:paid_detail' order.id %}">order number {{order.id}} with price {{ order.get_total_price }} $</a>
+        <br><br\>
+        <br><br\>
+        <br><br\>
+    {% empty %}
+        <b> You dont have any paid orders</b>
+    {% endfor %}
+{% endblock %}

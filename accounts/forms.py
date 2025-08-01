@@ -81,6 +81,12 @@ class UserChagePasswordForm(forms.Form):
             raise ValidationError('Password must have at least 8 characters!')
         return p2
     
+    def __init__(self, *args, **kwargs):
+        super(UserChagePasswordForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+    
 class UserUpdateProfileForm(forms.ModelForm):
     class Meta:
         model = User
@@ -90,3 +96,4 @@ class UserUpdateProfileForm(forms.ModelForm):
         super(UserUpdateProfileForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+            #field.widget.attrs['readonly'] = 'readonly'

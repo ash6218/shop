@@ -3,9 +3,8 @@
 {% block content %}
     <a href="{% url 'accounts:update_profile' %}" class="btn btn-info">Update Profile</a>
     <a href="{% url 'accounts:change_password' %}" class="btn btn-warning">Change Password</a>
-    <br><br>
     <a href="{% url 'orders:unpaid_orders' %}" class="btn btn-danger">Unpaid Orders</a>
-    <a href="#" class="btn btn-success">paid Orders</a>
+    <a href="{% url 'orders:paid_orders' %}" class="btn btn-success">Paid Orders</a>
     <br><br><br>
     <h2>Profile</h2><br>
     <b>Name: {{ request.user.full_name }}</b><br><br>
