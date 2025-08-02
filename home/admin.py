@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Comment
+from .models import Category, Product, Comment, Favorite
 from django.contrib import admin
 from django import forms
 from .models import Product
@@ -45,4 +45,9 @@ class ProductAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'title', 'text', 'created', 'updated',)
     ordering = ['updated']
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'is_fav', 'created', 'updated',)
+    ordering = ['is_fav', '-updated']
 

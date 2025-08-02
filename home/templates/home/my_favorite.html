@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>My Favorite Products</h2><br>
+    <b>
+        <div class="container">
+                <div class="row">
+                    {% for product in products %}
+                    <div class="col-md-3 mb-5">
+                        <div class="card">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}"  class="card-img-top">
+                            <div class="card-body">
+                            <a href="{{ product.get_absolute_url }}" class="card-title">{{ product.name }} - price: {{product.price}} $</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p>you dont have any favorite product yet!</p>
+                    {% endfor %}
+                </div>
+            </div>
+    
+    </b><br><br>
+{% endblock %}

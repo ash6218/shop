@@ -64,3 +64,22 @@ class Comment(models.Model):
     text = models.TextField(max_length=2000)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['updated',]
+
+    def __str__(self):
+        return self.title
+    
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ufav')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='pfav')
+    is_fav = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['updated',]
+
+    def __str__(self):
+        return self.product.name

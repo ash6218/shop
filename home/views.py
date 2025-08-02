@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Product, Category, Comment
+from .models import Product, Category, Comment, Favorite
 from . import tasks
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,7 +13,7 @@ from orders.forms import CartAddForm
 
 
 class HomeView(View):
-    """we have 2 different urls that links to this view, the main urls wont send 
+    """we have different urls that links to this view, some wont send 
     category_slug and it ends with an error, unless we use category_slug=None"""
     def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
@@ -124,4 +124,20 @@ class BucketPicsView(IsAdminUserMixin, View):
         pics = list_s3_images()[1]
         return render(request, self.template_name, {'pics':pics})
 
+class FavoriteView(LoginRequiredMixin, View):
+    def get(self, request, slug):
+        user = request.user
+        product = Product.objects.get(slug=slug)
+        favorite = Favorite.objects.create(user=user, product=product)
+        favorite.is_fav = True
+        favorite.save()
+        messages.success(request, f'the product "{product.name}" has been added to your favorite list)', 'success')
+        return redirect('home:home')
     
+class MyFavoritesListView(LoginRequiredMixin, View):
+    def get(self, request):
+        favorites = Favorite.objects.filter(user=request.user)
+        products =[]
+        for fav in favorites:
+            products.append(fav.product)
+        return render(request, 'home/my_favorite.html', {'products':products})

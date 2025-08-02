@@ -12,6 +12,7 @@ from .tasks import send_otp_code_task
 from shop import settings
 from django.contrib.auth import views as auth_views, update_session_auth_hash
 from django.urls import reverse_lazy
+from home.models import Favorite
 
 class UserRegisterView(View):
     form_class = UserCreationForm

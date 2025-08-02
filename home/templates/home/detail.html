@@ -2,22 +2,25 @@
 {% load static %}
 
 {% block content %}
-    <div class="card mb-3">
+    <div class="card mb-3 ms-4">
     <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="max-width: 1200px;">
     <div class="card-body">
         <h4 class="card-title">{{ product.name }}</h4>
         <p class="card-text">description: {{ product.description|safe }}</p>
+        <a href="{% url 'home:product_fav' product.slug %}" class="btn btn-danger">add to my favorites</a>
+        <br><br>
         <b>price: {{ product.price }} $</b>
         <p class="card-text"><small class="text-body-secondary">{{ product.created }}</small></p><br>
-    </div>
 
     <form action="{% url 'orders:cart_add' product.id %}" method="post">
         {% csrf_token %}
         {{form1.as_p}}
         <input type="submit" value="Add to Cart" class="btn btn-primary">
     </form>
-    <br/><hr><br/>
-
+    </div>
+    <br/><hr>
+    <h4 class="card-title">Comments</h4>
+    <br/>
     {% for comment in comments %}
     <div class="card">
         <div class="card-header">

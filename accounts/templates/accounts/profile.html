@@ -5,6 +5,7 @@
     <a href="{% url 'accounts:change_password' %}" class="btn btn-warning">Change Password</a>
     <a href="{% url 'orders:unpaid_orders' %}" class="btn btn-danger">Unpaid Orders</a>
     <a href="{% url 'orders:paid_orders' %}" class="btn btn-success">Paid Orders</a>
+    <a href="{% url 'home:my_fav_pr' %}" class="btn btn-primary">My Favorite Products</a>
     <br><br><br>
     <h2>Profile</h2><br>
     <b>Name: {{ request.user.full_name }}</b><br><br>

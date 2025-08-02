@@ -17,6 +17,9 @@ urlpatterns = [
     path('bucket/', include(bucket_urls)),
     path('bucket_pics/',views.BucketPicsView.as_view(), name='bucket_pics'),
     path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
+    path('favorite/<slug:slug>/', views.FavoriteView.as_view(), name='product_fav'),
+    path('favorites_list/', views.MyFavoritesListView.as_view(), name='my_fav_pr'),
+    
     
 ]
 # bucket should be higher than product_detail and delete
