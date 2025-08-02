@@ -7,7 +7,8 @@
     <div class="card-body">
         <h4 class="card-title">{{ product.name }}</h4>
         <p class="card-text">description: {{ product.description|safe }}</p>
-        <a href="{% url 'home:product_fav' product.slug %}" class="btn btn-danger">add to my favorites</a>
+        <a href="{% url 'home:product_fav' product.slug %}" class="btn btn-danger">
+            {% if is_fav %}remove from my favorites{% else %}add to my favorites{% endif %}</a>
         <br><br>
         <b>price: {{ product.price }} $</b>
         <p class="card-text"><small class="text-body-secondary">{{ product.created }}</small></p><br>

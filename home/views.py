@@ -26,17 +26,15 @@ class HomeView(View):
 
 
 class ProductDetailView(LoginRequiredMixin, View):
-    form_class1 = CartAddForm
-    form_class2 = CommentForm
     def get(self, request, slug):
-        self.product = Product.objects.get(slug=slug)
-        self.form1 = self.form_class1
-        self.form2 = self.form_class2
-        comments = Comment.objects.filter(product=self.product)
-        return render(request, 'home/detail.html', {'product':self.product, 'form1':self.form1, 'form2':self.form2, 'comments':comments})
+        product = Product.objects.get(slug=slug)
+        comments = Comment.objects.filter(product=product)
+        is_fav = Favorite.objects.filter(user=request.user, product=product).exists()
+        return render(request, 'home/detail.html', {
+            'product':product, 'form1':CartAddForm, 'form2':CommentForm, 'comments':comments, 'is_fav':is_fav})
     
     def post(self, request, slug):
-        form2 = self.form_class2(request.POST)
+        form2 = CommentForm(request.POST)
         if form2.is_valid():
             cd = form2.cleaned_data
             comment = Comment.objects.create(user=request.user, product=Product.objects.get(slug=slug), title=cd['title'], text=cd['text'])
@@ -126,13 +124,25 @@ class BucketPicsView(IsAdminUserMixin, View):
 
 class FavoriteView(LoginRequiredMixin, View):
     def get(self, request, slug):
+        product = Product.objects.get(slug=slug)
+        comments = Comment.objects.filter(product=product)
         user = request.user
         product = Product.objects.get(slug=slug)
-        favorite = Favorite.objects.create(user=user, product=product)
-        favorite.is_fav = True
-        favorite.save()
-        messages.success(request, f'the product "{product.name}" has been added to your favorite list)', 'success')
-        return redirect('home:home')
+        context = {'product':product, 'form1':CartAddForm, 'form2':CommentForm, 'comments':comments}
+        already_fav = Favorite.objects.filter(user=user, product=product).first()
+        print(already_fav)
+        if already_fav is None:
+            favorite = Favorite.objects.create(user=user, product=product)
+            favorite.save()
+            context['is_fav'] = True
+            print(context['is_fav'])
+            messages.success(request, f'the product "{product.name}" has been added to your favorite list.', 'success')
+            return redirect('home:product_detail', slug=slug)
+        context['is_fav'] = False
+        print(context['is_fav'])
+        already_fav.delete()
+        messages.error(request, f'the product "{product.name}" has been removed from your favorite list.', 'warning')
+        return redirect('home:product_detail', slug=slug)
     
 class MyFavoritesListView(LoginRequiredMixin, View):
     def get(self, request):
