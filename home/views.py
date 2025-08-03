@@ -80,19 +80,7 @@ class UploadImageView(IsAdminUserMixin, View):
     def get(self, request):
         form = self.form_class
         return render(request, self.template_name, {'form':form})
-    """
-    def post(self, request):
-        form = self.form_class(request.POST, request.FILES)
-        if form.is_valid():
-            name=form.cleaned_data['name']
-            #bucket.upload_object(name)
-            tasks.upload_object_task.delay(name)
-            #UploadImage(name=form.cleaned_data['name'], image=request.FILES['image']).save()
-            messages.success(request, 'your object is uploaded', 'success')
-            return redirect('home:bucket')
-        messages.error(request, 'something went wrong! please try again', 'danger')
-        return render(request, self.template_name, {'form':form})
-    """
+    
     def post(self, request):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():

@@ -16,6 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     postal_code = models.CharField(max_length=10, null=True, blank=True, default="", validators=[ten_digits])
     national_id = models.CharField(max_length=10, null=True, blank=True, default="", validators=[ten_digits])
     birthday = models.DateField(null=True, blank=True, default="1990-01-01")
+    image_url = models.URLField(max_length=500, blank=True, null=True)
 
     objects = UserManager()
 

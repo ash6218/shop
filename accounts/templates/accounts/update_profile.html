@@ -6,11 +6,13 @@
 <form>
   <div class="mb-6">
     <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input type="email" class="form-control" value="{{request.user.email}}" readonly>
+    <input type="email" class="form-control" value="{{request.user.email}}" readonly data-bs-toggle="tooltip"
+           title="You can not change this field">
     </div>
   <div class="mb-3">
     <label for="exampleInputPassword1" class="form-label">Phone Number</label>
-    <input class="disabled form-control" value="{{request.user.phone_number}}" readonly>
+    <input class="disabled form-control" value="{{request.user.phone_number}}" readonly data-bs-toggle="tooltip"
+           title="You can not change this field">
   </div>
 </form>
 

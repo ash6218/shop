@@ -1,18 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm, UserUpdateProfileForm
-import random, pytz
+import random, pytz, os
 from utils import send_otp_code
 from .models import OtpCode, User
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .tasks import send_otp_code_task
+from .tasks import send_otp_code_task, bucket
 from shop import settings
 from django.contrib.auth import views as auth_views, update_session_auth_hash
 from django.urls import reverse_lazy
-from home.models import Favorite
+from home.forms import ImageUploadForm
+from bucket import bucket
+from . import tasks
 
 class UserRegisterView(View):
     form_class = UserCreationForm
@@ -177,6 +179,10 @@ class UserLoginVerifyCodeView(View):
 
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
+        print(f'profile request.user.image_url:{request.user.image_url}')
+        if request.user.image_url:
+            img = request.user.image_url
+            print(img)
         return render(request, 'accounts/profile.html')
     
 class UserUpdateProfileView(LoginRequiredMixin, View):
@@ -232,3 +238,34 @@ class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'
+
+class UploadProfileImageView(LoginRequiredMixin, View):
+    form_class = ImageUploadForm
+    template_name = "accounts/upload_profile.html"
+    def get(self, request):
+        form = self.form_class
+        return render(request, self.template_name, {'form':form})
+    
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            image_file = request.FILES['image']
+            name_from_form = form.cleaned_data['name']
+
+            final_file_name = name_from_form + os.path.splitext(image_file.name)[1]
+            img= settings.AWS_S3_ENDPOINT_URL + "/" + settings.AWS_STORAGE_BUCKET_NAME + "/" + final_file_name
+            request.user.image_url = img
+            request.user.save()
+            file_content = image_file.read()
+            if settings.CELERY_IS_ACTIVE:
+                tasks.upload_object_task.delay(final_file_name, file_content)
+                messages.success(request, 'Your object is uploaded with custom name', 'info')
+            else:
+                bucket.upload_object(final_file_name, file_content)
+                print("settings.CELERY_IS_ACTIVE is False")
+                messages.success(request, 'Your object is uploaded', 'success')
+            
+            return redirect('accounts:profile')
+
+        messages.error(request, 'Something went wrong! Please try again', 'danger')
+        return render(request, self.template_name, {'form': form})

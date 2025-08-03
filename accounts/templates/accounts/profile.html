@@ -6,8 +6,13 @@
     <a href="{% url 'orders:unpaid_orders' %}" class="btn btn-danger">Unpaid Orders</a>
     <a href="{% url 'orders:paid_orders' %}" class="btn btn-success">Paid Orders</a>
     <a href="{% url 'home:my_fav_pr' %}" class="btn btn-primary">My Favorite Products</a>
+    <a href="{% url 'accounts:upload_profile' %}" class="btn btn-secondary">Upload Profile Image</a>
     <br><br><br>
     <h2>Profile</h2><br>
+    {% if request.user.image_url %}
+    <img src="{{ request.user.image_url }}" class="card-img-top" style="max-width: 200px;">
+    {% endif %}
+    <br><br>
     <b>Name: {{ request.user.full_name }}</b><br><br>
     <b>Email: {{ request.user.email }}</b><br><br>
     <b>Phone Number: {{ request.user.phone_number }}</b><br><br>

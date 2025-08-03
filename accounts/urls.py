@@ -17,5 +17,5 @@ urlpatterns = [
     path('logout/', views.UserLogoutView.as_view(), name='user_logout'),
     path('verify/', views.UserRegisterVerifyCodeView.as_view(), name='verify_code'),
     path('loginverify/', views.UserLoginVerifyCodeView.as_view(), name='login_verify_code'),
-    
+    path('upload_profile/', views.UploadProfileImageView.as_view(), name='upload_profile'),
 ]
