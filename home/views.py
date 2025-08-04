@@ -33,11 +33,14 @@ class HomeView(View):
         return render(request, 'home/home.html', {'products':products, 'categories':categories, 'form':form})
     
 
-class ProductDetailView(LoginRequiredMixin, View):
+class ProductDetailView(View):
     def get(self, request, slug):
         product = Product.objects.get(slug=slug)
         comments = Comment.objects.filter(product=product)
-        is_fav = Favorite.objects.filter(user=request.user, product=product).exists()
+        if request.user.is_authenticated:
+            is_fav = Favorite.objects.filter(user=request.user, product=product).exists()
+        else:
+            is_fav = False
         return render(request, 'home/detail.html', {
             'product':product, 'form1':CartAddForm, 'form2':CommentForm, 'comments':comments, 'is_fav':is_fav})
     
@@ -67,7 +70,9 @@ class DeleteBucketObject(IsAdminUserMixin, View):
             bucket.delete_object(key)
             print("settings.CELERY_IS_ACTIVE is False")
             messages.success(request, 'your object is deleted', 'success')
-        return redirect('home:bucket')
+        next_url = request.GET.get('next') # super useful, by adding ?next={{ request.path }} at the end of url tag in html file!
+        return redirect(next_url)
+        #return redirect('home:bucket')
 
 
 class DownloadBucketObject(IsAdminUserMixin, View):

@@ -22,7 +22,7 @@
       <td>{{ obj.LastModified|timesince }} ago</td>
       <td>{{ obj.Size|filesizeformat }}</td>
       <td><a href="{% url 'home:download_obj_bucket' obj.Key %}" class="btn btn-primary">Download</a>
-      <a href="{% url 'home:delete_obj_bucket' obj.Key %}" class="btn btn-danger">Delete</a></td>
+      <a href="{% url 'home:delete_obj_bucket' obj.Key %}?next={{ request.path }}" class="btn btn-danger">Delete</a></td>
     </tr>
     {% endfor %}
   </tbody>

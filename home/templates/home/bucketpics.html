@@ -10,6 +10,7 @@
                     <div class="card-body">
                         <p class="card-text">{{ pic.key }}</p>
                         <a href="{{ pic.url }}" class="btn btn-sm btn-primary" download>download</a>
+                        <a href="{% url 'home:delete_obj_bucket' pic.key %}?next={{ request.path }}" class="btn btn-sm btn-danger">delete</a>
                     </div>
                     </div>
                 </div>
