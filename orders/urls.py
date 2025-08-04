@@ -13,5 +13,7 @@ urlpatterns = [
     path('verify/', views.OrderVerifyView.as_view(), name='order_verify'),
     path('unpaid/', views.UnpaidOrderView.as_view(), name='unpaid_orders'),
     path('paid/', views.paidOrderView.as_view(), name='paid_orders'),
-    path('unpaid_detail/<int:order_id>/', views.UnpaidDetailView.as_view(), name='unpaid_detail'),    
+    path('unpaid_detail/<int:order_id>/', views.UnpaidDetailView.as_view(), name='unpaid_detail'),
+    path('paid_detail/<int:order_id>/', views.PaidDetailView.as_view(), name='paid_detail'),
+    path('delete_unpaid/<int:order_id>/', views.DeleteUnpaidOrderView.as_view(), name='delete_unpaid'),
 ]

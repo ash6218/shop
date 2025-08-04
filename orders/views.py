@@ -37,7 +37,7 @@ class OrderDetailView(LoginRequiredMixin, View):
     template_name = 'orders/order.html'
     form_class = CouponForm
     def get(self, request, order_id):
-        order = get_object_or_404(Order, id=order_id)
+        order = get_object_or_404(Order, id=order_id, paid=False)
         return render(request, self.template_name, {'order':order, 'form':self.form_class})
     
     def post(self, request, order_id):
@@ -173,7 +173,12 @@ class UnpaidOrderView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         orders = Order.objects.filter(user=user, paid=False)
-        return render(request, 'orders/unpaid_orders.html', {'orders':orders})
+        return render(request,'orders/unpaid_orders.html', {'orders':orders})
+    
+class DeleteUnpaidOrderView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        Order.objects.filter(id=order_id, paid=False).delete()
+        return redirect('orders:unpaid_orders')
 
 class UnpaidDetailView(LoginRequiredMixin, View):
     def get(self, request, order_id):
@@ -186,3 +191,9 @@ class paidOrderView(LoginRequiredMixin, View):
         user = request.user
         orders = Order.objects.filter(user=user, paid=True)
         return render(request, 'orders/paid_orders.html', {'orders':orders})
+    
+class PaidDetailView(LoginRequiredMixin, View):
+    def get(self, request, order_id):
+        order = Order.objects.get(id=order_id, paid=True)
+        orderitems = order.items.all()
+        return render(request, 'orders/paid_detail.html', {'order':order, 'orderitems':orderitems})
