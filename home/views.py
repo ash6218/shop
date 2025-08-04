@@ -4,26 +4,34 @@ from .models import Product, Category, Comment, Favorite
 from . import tasks
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ImageUploadForm, CommentForm
+from .forms import ImageUploadForm, CommentForm, SearchForm
 from bucket import bucket, list_s3_images
 import os
 from utils import IsAdminUserMixin
 from shop import settings
 from orders.forms import CartAddForm
+from django.db.models import Q
 
 
 class HomeView(View):
+    form_class = SearchForm
     """we have different urls that links to this view, some wont send 
     category_slug and it ends with an error, unless we use category_slug=None"""
     def get(self, request, category_slug=None):
         products = Product.objects.filter(available=True)
         categories = Category.objects.filter(is_sub=False)
         #sub_categories = Category.objects.filter(is_sub=True)
+        form = self.form_class
         if category_slug:
             category = Category.objects.get(slug=category_slug)
             products = products.filter(category=category)
-        return render(request, 'home/home.html', {'products':products, 'categories':categories, })
-
+        search_query = request.GET.get('search')
+        if search_query:
+            products = products.filter(
+                Q(description__icontains=search_query) |
+                Q(name__icontains=search_query))
+        return render(request, 'home/home.html', {'products':products, 'categories':categories, 'form':form})
+    
 
 class ProductDetailView(LoginRequiredMixin, View):
     def get(self, request, slug):
@@ -139,3 +147,12 @@ class MyFavoritesListView(LoginRequiredMixin, View):
         for fav in favorites:
             products.append(fav.product)
         return render(request, 'home/my_favorite.html', {'products':products})
+
+class SearchFormView(View):
+    form_class = SearchForm
+    def get(self , request):
+        form = self.form_class
+        return render(request, )
+
+    def post(self, request):
+        pass

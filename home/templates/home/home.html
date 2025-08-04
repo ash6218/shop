@@ -19,20 +19,25 @@
             </ul>
         </div>
     {% endfor %}
-        <br>
-        <br/><hr>
-            <div class="container">
-                <div class="row">
-                    {% for product in products %}
-                    <div class="col-md-4 mb-5">
-                        <div class="card">
-                            <img src="{{ product.image_url }}" alt="{{ product.name }}"  class="card-img-top" >
-                            <div class="card-body">
-                            <a href="{{ product.get_absolute_url }}" class="card-title">{{ product.name }}</a>
-                            </div>
+    <br><br>
+    <form action="" method="get">
+        {{form.as_p}}
+        <input type="submit" value="Search Product" class="btn btn-dark">
+    </form>
+    <br>
+    <br/><hr>
+        <div class="container">
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-5">
+                    <div class="card">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}"  class="card-img-top" >
+                        <div class="card-body">
+                        <a href="{{ product.get_absolute_url }}" class="card-title">{{ product.name }}</a>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
+        </div>
 {% endblock %}

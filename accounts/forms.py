@@ -97,3 +97,6 @@ class UserUpdateProfileForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             #field.widget.attrs['readonly'] = 'readonly'
+
+class ProfileImageUploadForm(forms.Form):
+    image = forms.ImageField()

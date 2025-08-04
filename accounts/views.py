@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm, UserUpdateProfileForm
+from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm, UserUpdateProfileForm, ProfileImageUploadForm
 import random, pytz, os
 from utils import send_otp_code
 from .models import OtpCode, User
@@ -12,7 +12,6 @@ from .tasks import send_otp_code_task, bucket
 from shop import settings
 from django.contrib.auth import views as auth_views, update_session_auth_hash
 from django.urls import reverse_lazy
-from home.forms import ImageUploadForm
 from bucket import bucket
 from . import tasks
 
@@ -240,19 +239,17 @@ class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'
 
 class UploadProfileImageView(LoginRequiredMixin, View):
-    form_class = ImageUploadForm
+    form_class = ProfileImageUploadForm
     template_name = "accounts/upload_profile.html"
     def get(self, request):
-        form = self.form_class
+        form = self.form_class()
         return render(request, self.template_name, {'form':form})
     
     def post(self, request):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             image_file = request.FILES['image']
-            name_from_form = form.cleaned_data['name']
-
-            final_file_name = name_from_form + os.path.splitext(image_file.name)[1]
+            final_file_name = "a" + str(random.randint(1000000,9999999)) + os.path.splitext(image_file.name)[1]
             img= settings.AWS_S3_ENDPOINT_URL + "/" + settings.AWS_STORAGE_BUCKET_NAME + "/" + final_file_name
             request.user.image_url = img
             request.user.save()

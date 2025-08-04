@@ -15,3 +15,11 @@ class CommentForm(forms.ModelForm):
         super(CommentForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+class SearchForm(forms.Form):
+    search = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'placeholder':'Enter keywords to search products: white cat'}))
+
+    def __init__(self, *args, **kwargs):
+        super(SearchForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
