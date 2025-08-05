@@ -53,8 +53,9 @@ def list_s3_images():
     images1, images2 = [], []
     for obj in response.get('Contents', []):
         key = obj['Key']
+        size = obj['Size']
         if key.lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.webp')):
             url = f"{settings.AWS_S3_ENDPOINT_URL}/{settings.AWS_STORAGE_BUCKET_NAME}/{key}"
             images1.append((url, key))  # (value, label)
-            images2.append({'url':url, 'key':key})
+            images2.append({'url':url, 'key':key, 'size':size})
     return images1, images2
