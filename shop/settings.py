@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False #**prod**
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ash1.ir', 'www.ash1.ir'] #**prod**
 
 
 # Application definition
@@ -137,7 +137,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
+STATIC_ROOT = BASE_DIR / 'staticfiles' #**prod**
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
