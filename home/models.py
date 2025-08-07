@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.html import mark_safe
-from ckeditor.fields import RichTextField
 from accounts.models import User
 
 
@@ -28,7 +27,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     #image = models.ImageField(upload_to='products/')
     image_url = models.URLField(max_length=500, blank=True, null=True)
-    description = RichTextField()
+    description = models.TextField()
     price = models.IntegerField()
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
