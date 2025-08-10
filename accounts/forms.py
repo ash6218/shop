@@ -100,3 +100,7 @@ class UserUpdateProfileForm(forms.ModelForm):
 
 class ProfileImageUploadForm(forms.Form):
     image = forms.ImageField()
+
+class ChangeSmsForm(forms.Form):
+    admin_enrty_code = forms.CharField(label='Admin Enrty Code', max_length=20)
+    sms_parameter = forms.CharField(label='SMS Parameter', max_length=100)

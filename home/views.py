@@ -153,11 +153,3 @@ class MyFavoritesListView(LoginRequiredMixin, View):
             products.append(fav.product)
         return render(request, 'home/my_favorite.html', {'products':products})
 
-class SearchFormView(View):
-    form_class = SearchForm
-    def get(self , request):
-        form = self.form_class
-        return render(request, )
-
-    def post(self, request):
-        pass

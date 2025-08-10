@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Register Form</h2><br>
+    <h2>Change SMS Parameters Form</h2><br>
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Register">
+        <input type="submit" value="Change SMS Parameters">
     </form>
     <br>
     <br>
     <b></b>
-    <a href="{% url 'accounts:change_sms_form' %}" class="btn btn-dark">Change SMS parameters</a>
+    
 {% endblock %}

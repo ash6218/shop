@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm, UserUpdateProfileForm, ProfileImageUploadForm
+from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm
+from .forms import UserUpdateProfileForm, ProfileImageUploadForm, ChangeSmsForm
 import random, pytz, os
 from utils import send_otp_code
 from .models import OtpCode, User
@@ -123,9 +124,9 @@ class UserOtpLoginView(View):
         if form.is_valid():
             random_code = random.randint(1000, 9999)
             if settings.CELERY_IS_ACTIVE:
-                send_otp_code_task.delay(form.cleaned_data['phone_number'], random_code)
+                send_otp_code_task.delay(form.cleaned_data['phone_number'], random_code, request)
             else:
-                send_otp_code(form.cleaned_data['phone_number'], random_code)
+                send_otp_code(form.cleaned_data['phone_number'], random_code, request)
                 print("settings.CELERY_IS_ACTIVE is False")
             OtpCode.objects.create(phone_number=form.cleaned_data['phone_number'], code=random_code)
             request.session['user_otplogin_info'] = {'phone_number' : form.cleaned_data['phone_number']}
@@ -266,3 +267,27 @@ class UploadProfileImageView(LoginRequiredMixin, View):
 
         messages.error(request, 'Something went wrong! Please try again', 'danger')
         return render(request, self.template_name, {'form': form})
+    
+class ChangeSmsFormView(View):
+    form_class = ChangeSmsForm
+    template_name = 'accounts/changesmsform.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get(self, request):
+        form = self.form_class # no prantesis is needed
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['admin_enrty_code']=='kavenegar':
+                request.session['sms_p'] = {}
+                request.session['sms_p']['0'] = form.cleaned_data['sms_parameter']
+                messages.success(request, 'sms parameter changed successfully. now you can register with sms', 'success')
+                return redirect('accounts:user_register')
+            messages.error(request, 'failed to change sms parameter. please try again', 'warning')
+        return render(request, self.template_name, {'form':form})
