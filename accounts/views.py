@@ -269,6 +269,7 @@ class UploadProfileImageView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
     
 class ChangeSmsFormView(View):
+    # it works!
     form_class = ChangeSmsForm
     template_name = 'accounts/changesmsform.html'
 
