@@ -104,3 +104,17 @@ class ProfileImageUploadForm(forms.Form):
 class ChangeSmsForm(forms.Form):
     admin_enrty_code = forms.CharField(label='Admin Enrty Code', max_length=20)
     sms_parameter = forms.CharField(label='SMS Parameter', max_length=100)
+
+class ApiRegisterForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(required=True, widget=forms.PasswordInput)
+    password2 = forms.CharField(label='confirm password', required=True, widget=forms.PasswordInput)
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        p1 = cd['password']
+        p2 = cd['password2']
+        if p1 and p2 and p1!=p2:
+            raise ValidationError('Passwords must match!')
+        return p2

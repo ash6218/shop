@@ -3,7 +3,12 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 def send_otp_code(phone_number, code, request):
     try:
-        api = KavenegarAPI(request.session['sms_p']['0'])
+        if request.session['sms_p']['0']:
+            print(request.session['sms_p'])
+            rs = request.session['sms_p']['0']
+        else:
+            rs = '6D594336547453695931705838726556703369506F6F3269542F363735382B79677650424F355A6C3352773D'
+        api = KavenegarAPI(rs)
         params = { 'sender' : '2000660110', 'receptor': phone_number, 'message' :f'کد تایید شما: {code}' }
         response = api.sms_send(params)
 

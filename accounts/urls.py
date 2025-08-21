@@ -19,4 +19,5 @@ urlpatterns = [
     path('loginverify/', views.UserLoginVerifyCodeView.as_view(), name='login_verify_code'),
     path('upload_profile/', views.UploadProfileImageView.as_view(), name='upload_profile'),
     path('change_sms_form/', views.ChangeSmsFormView.as_view(), name='change_sms_form'),
+    path('api_register/', views.ApiRegisterView.as_view(), name='api_register'),
 ]

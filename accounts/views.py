@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm
-from .forms import UserUpdateProfileForm, ProfileImageUploadForm, ChangeSmsForm
-import random, pytz, os
+from .forms import UserUpdateProfileForm, ProfileImageUploadForm, ChangeSmsForm, ApiRegisterForm
+import random, pytz, os, requests
 from utils import send_otp_code
 from .models import OtpCode, User
 from django.contrib import messages
@@ -292,3 +292,28 @@ class ChangeSmsFormView(View):
                 return redirect('accounts:user_register')
             messages.error(request, 'failed to change sms parameter. please try again', 'warning')
         return render(request, self.template_name, {'form':form})
+
+class ApiRegisterView(View):
+    form_class = ApiRegisterForm
+    template_name = 'accounts/api_register.html'
+
+    def get(self, request):
+        form = self.form_class # no prantesis is needed
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        try:
+            if form.is_valid():
+                url = 'http://127.0.0.1:8000/accounts/register/'
+                headers = {'Authorization':'token 6b5efc10e9641d5944ac635e005225eacab0ab5e'}
+                response = requests.post(url, headers=headers, json=form.cleaned_data).json()
+                print(f'data: {form.cleaned_data}')
+                print(f'api response: {response}')
+                if response['non_field_errors']:
+                    messages.error(request, f'error : {response['non_field_errors'][0]}', 'warning')
+                return redirect('accounts:api_register')
+            return render(request, self.template_name, {'form':form})
+        except:
+            messages.error(request, 'API connection failed.', 'warning')
+            return redirect('home:home')

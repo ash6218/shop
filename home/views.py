@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ImageUploadForm, CommentForm, SearchForm
 from bucket import bucket, list_s3_images
-import os
+import os, requests
 from utils import IsAdminUserMixin
 from shop import settings
 from orders.forms import CartAddForm
@@ -153,3 +153,26 @@ class MyFavoritesListView(LoginRequiredMixin, View):
             products.append(fav.product)
         return render(request, 'home/my_favorite.html', {'products':products})
 
+class PersonApiRequestView(LoginRequiredMixin, View):
+    def get(self, request):
+        try:
+            url = 'http://127.0.0.1:8000/'
+            headers = {'Authorization':'token 6b5efc10e9641d5944ac635e005225eacab0ab5e'}
+            json_response = requests.get(url, headers=headers).json()
+            print(f'api response: {json_response}')
+            return render(request, 'home/api_result.html', {'json_response':json_response})
+        except:
+            messages.error(request, 'API connection failed.', 'warning')
+            return redirect('home:home')
+        
+class UserApiRequestView(LoginRequiredMixin, View):
+    def get(self, request):
+        try:
+            url = 'http://127.0.0.1:8000/accounts/user'
+            headers = {'Authorization':'token 6b5efc10e9641d5944ac635e005225eacab0ab5e'}
+            json_response = requests.get(url, headers=headers).json()
+            print(f'api response: {json_response}')
+            return render(request, 'home/api_user_result.html', {'json_response':json_response})
+        except:
+            messages.error(request, 'API connection failed.', 'warning')
+            return redirect('home:home')

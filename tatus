@@ -1,0 +1,41 @@
+[33m38502b2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m before 3rd deploy
+[33m481d5c9[m developing2
+[33md670dbd[m developing strange sms parameter change!
+[33mb02c38c[m non-deploy minor changes
+[33mcd5af64[m before 2nd deploy
+[33mac30dfc[m bucket pics size modified
+[33maa4dcf7[m fixing some non-login bugs
+[33m0b69828[m paid orders & delete unpaid
+[33m7fd74ec[m simple search added
+[33m203c8d5[m profile image upload
+[33mf4f20b4[m favorite products part 2
+[33m05f6c90[m Favorite products part 1
+[33m4e2aad1[m adding some effects on product detail
+[33me7d04c2[m comment section done, all by myself <3
+[33me841f47[m readonly and form-control settings
+[33md4cc4c4[m secret keys changed
+[33md091d3e[m .env and config settings
+[33m0e335ac[m empty cart, no checkout
+[33m3e6d8f3[m profile update finally done!
+[33mee9fc3a[m change password done.
+[33me8c2294[m Problem with update form
+[33m14277b0[m Profile added
+[33mc93c97f[m unpaid orders added
+[33m2a19e3c[m unpaid orders & bootstrap inbox
+[33mf227950[m ckeditor
+[33m4726500[m Postgresql migration
+[33m07afa8a[m creating .gitignore
+[33mef592ac[m pay-portal, coupon & permissions
+[33m85eba41[m cart & orders
+[33m4ff432b[m some frontend configurations
+[33m16f4e93[m nested categories
+[33mfd57707[m modifying VS-code shortcuts
+[33m8801b69[m customizing Celery condition + debugging
+[33m4a257f9[m minor changes before go back!
+[33me5d71e6[m debugging & connecting to storages & mixin
+[33m37d6a19[m upload files with celery in external storages
+[33m969381e[m static, media files & filter-first
+[33mbb4712a[m expiration, login and otp login
+[33m69f7ce3[m full new Register module
+[33mea1c970[m creating custom user model
+[33md3abdb2[m initiating Shop project with Django
