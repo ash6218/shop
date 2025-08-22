@@ -199,3 +199,6 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Ash1.ir'
+
+# Api Authorization Token
+API_TOKEN = config('API_TOKEN')

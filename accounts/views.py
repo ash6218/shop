@@ -310,9 +310,14 @@ class ApiRegisterView(View):
                 response = requests.post(url, headers=headers, json=form.cleaned_data).json()
                 print(f'data: {form.cleaned_data}')
                 print(f'api response: {response}')
-                if response['non_field_errors']:
-                    messages.error(request, f'error : {response['non_field_errors'][0]}', 'warning')
-                return redirect('accounts:api_register')
+                try:
+                    if form.cleaned_data['username']==response['username']:
+                        messages.success(request, f'the user is registered: {response}', 'success')
+                        return redirect('accounts:api_register')
+                    messages.error(request, f'Error: {response}', 'warning')
+                except:
+                    messages.error(request, f'Error: {response}', 'warning')
+            messages.error(request, 'The form was not valid. please try again.', 'warning')
             return render(request, self.template_name, {'form':form})
         except:
             messages.error(request, 'API connection failed.', 'warning')

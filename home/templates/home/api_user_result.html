@@ -4,7 +4,7 @@
     <h2>API results</h2><br>
         <ul>
             {% for j in json_response %}
-                <li>{{ j.username }} - {% if j.email %}{{j.email}}{% else %}no email{% endif %}</li>
+                <li>id : {{ j.id }} - username : {{ j.username }} - email : {% if j.email %}{{j.email}}{% else %}no email{% endif %}</li>
             {% endfor %}
         </ul><br><br>
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>API questions list</h2><br>
+        <ul>
+            {% for j in json_response %}
+                <li>{{ j.username }} asked "{{ j.body }}"  -  {{ j.created }}</li>
+            {% endfor %}
+        </ul><br><br>
+{% endblock %}

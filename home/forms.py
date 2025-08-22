@@ -23,3 +23,8 @@ class SearchForm(forms.Form):
         super(SearchForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+class ApiQuestionForm(forms.Form):
+    user = forms.IntegerField()
+    title = forms.CharField(max_length=200)
+    body = forms.Textarea()

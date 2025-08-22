@@ -19,10 +19,10 @@ urlpatterns = [
     path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
     path('favorite/<slug:slug>/', views.FavoriteView.as_view(), name='product_fav'),
     path('favorites_list/', views.MyFavoritesListView.as_view(), name='my_fav_pr'),
+    path('api/', views.ApiView.as_view(), name='api'),
     path('api_request/', views.PersonApiRequestView.as_view(), name='api_req'),
     path('api_request_user/', views.UserApiRequestView.as_view(), name='api_req_user'),
-    
-    
+    path('api_question/', views.QuestionApiRequestView.as_view(), name='api_question'),    
     
 ]
 # bucket should be higher than product_detail and delete

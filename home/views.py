@@ -4,7 +4,7 @@ from .models import Product, Category, Comment, Favorite
 from . import tasks
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ImageUploadForm, CommentForm, SearchForm
+from .forms import ImageUploadForm, CommentForm, SearchForm, ApiQuestionForm
 from bucket import bucket, list_s3_images
 import os, requests
 from utils import IsAdminUserMixin
@@ -152,12 +152,16 @@ class MyFavoritesListView(LoginRequiredMixin, View):
         for fav in favorites:
             products.append(fav.product)
         return render(request, 'home/my_favorite.html', {'products':products})
+    
+class ApiView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'home/api.html')
 
 class PersonApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/'
-            headers = {'Authorization':'token 6b5efc10e9641d5944ac635e005225eacab0ab5e'}
+            headers = {'Authorization':settings.API_TOKEN}
             json_response = requests.get(url, headers=headers).json()
             print(f'api response: {json_response}')
             return render(request, 'home/api_result.html', {'json_response':json_response})
@@ -169,10 +173,36 @@ class UserApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/accounts/user'
-            headers = {'Authorization':'token 6b5efc10e9641d5944ac635e005225eacab0ab5e'}
+            headers = {'Authorization':settings.API_TOKEN}
             json_response = requests.get(url, headers=headers).json()
-            print(f'api response: {json_response}')
             return render(request, 'home/api_user_result.html', {'json_response':json_response})
         except:
             messages.error(request, 'API connection failed.', 'warning')
             return redirect('home:home')
+        
+class QuestionApiRequestView(LoginRequiredMixin, View):
+    def get(self, request):
+        try:
+            url = 'http://127.0.0.1:8000/questions/1/'
+            headers = {'Authorization':settings.API_TOKEN}
+            json_response = requests.get(url, headers=headers).json()
+            return render(request, 'home/api_q_get.html', {'json_response':json_response})
+        except:
+            messages.error(request, f'API connection failed:{json_response}', 'warning')
+            return redirect('home:api')
+        
+    def post(self, request):
+        form = ApiQuestionForm(request.data)
+        if form.is_valid():
+            try:
+                url = 'http://127.0.0.1:8000/questions/1/'
+                headers = {'Authorization':settings.API_TOKEN}
+                json_response = requests.get(url, headers=headers, json=form.cleaned_data).json()
+                print(f'data: {form.cleaned_data}')
+                print(f'api response: {json_response}')
+                messages.success(request, f'the user is registered: {json_response}', 'success')
+                return redirect('accounts:api_register')
+            except:
+                messages.error(request, f'API connection failed:{json_response}', 'warning')
+                return redirect('home:api')
+        return render(request, 'home/api_q_post.html', {'json_response':json_response})
