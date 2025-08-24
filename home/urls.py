@@ -23,6 +23,8 @@ urlpatterns = [
     path('api_request/', views.PersonApiRequestView.as_view(), name='api_req'),
     path('api_request_user/', views.UserApiRequestView.as_view(), name='api_req_user'),
     path('api_question/', views.QuestionApiRequestView.as_view(), name='api_question'),    
+    path('api_question/create/', views.QuestionApiCreateView.as_view(), name='api_q_create'),
+    path('api_question/Update/<int:pk>/', views.QuestionApiUpdateView.as_view(), name='api_q_update'),
     
 ]
 # bucket should be higher than product_detail and delete

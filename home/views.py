@@ -183,26 +183,59 @@ class UserApiRequestView(LoginRequiredMixin, View):
 class QuestionApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
-            url = 'http://127.0.0.1:8000/questions/1/'
+            url = 'http://127.0.0.1:8000/questions/'
             headers = {'Authorization':settings.API_TOKEN}
             json_response = requests.get(url, headers=headers).json()
             return render(request, 'home/api_q_get.html', {'json_response':json_response})
         except:
             messages.error(request, f'API connection failed:{json_response}', 'warning')
             return redirect('home:api')
-        
+
+class QuestionApiCreateView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = ApiQuestionForm()
+        return render(request, 'home/api_q_create.html', {'form':form})
+
     def post(self, request):
-        form = ApiQuestionForm(request.data)
+        form = ApiQuestionForm(request.POST)
         if form.is_valid():
             try:
-                url = 'http://127.0.0.1:8000/questions/1/'
+                url = 'http://127.0.0.1:8000/question/create/'
                 headers = {'Authorization':settings.API_TOKEN}
-                json_response = requests.get(url, headers=headers, json=form.cleaned_data).json()
+                json_response = requests.post(url, headers=headers, json=form.cleaned_data).json()
                 print(f'data: {form.cleaned_data}')
                 print(f'api response: {json_response}')
-                messages.success(request, f'the user is registered: {json_response}', 'success')
-                return redirect('accounts:api_register')
+                messages.success(request, f'new question is created: {json_response}', 'success')
+                return redirect('home:api_question')
             except:
                 messages.error(request, f'API connection failed:{json_response}', 'warning')
                 return redirect('home:api')
-        return render(request, 'home/api_q_post.html', {'json_response':json_response})
+        return render(request, 'home/api_q_create.html', {'json_response':json_response})
+    
+class QuestionApiUpdateView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        url = 'http://127.0.0.1:8000/questions/'
+        headers = {'Authorization':settings.API_TOKEN}
+        json_response = requests.get(url, headers=headers).json() # do it with sessions
+        qusetion_data = next((i for i in json_response if int(i['id'])==pk), None)
+        form = ApiQuestionForm(initial=qusetion_data)
+        return render(request, 'home/api_q_update.html', {'form':form})
+
+    def put(self, request, pk):
+        import json
+        data = json.loads(request.body)
+        form = ApiQuestionForm(data)
+        if form.is_valid():
+            try:
+                url = f'http://127.0.0.1:8000/question/update/{pk}/'
+                headers = {'Authorization':settings.API_TOKEN}
+                json_response = requests.put(url, headers=headers, json=form.cleaned_data).json()
+                print('##', f'data: {form.cleaned_data}')
+                print('###', f'api response: {json_response}')
+                messages.success(request, f'new question is created: {json_response}', 'success')
+                return redirect('home:api_question')
+            except:
+                messages.error(request, f'API connection failed:{json_response}', 'warning')
+                return redirect('home:api')
+        return render(request, 'home/api_q_update.html', {'json_response':json_response})
+    

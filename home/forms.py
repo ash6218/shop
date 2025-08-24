@@ -27,4 +27,9 @@ class SearchForm(forms.Form):
 class ApiQuestionForm(forms.Form):
     user = forms.IntegerField()
     title = forms.CharField(max_length=200)
-    body = forms.Textarea()
+    body = forms.CharField(max_length=2000)
+
+    def __init__(self, *args, **kwargs):
+        super(ApiQuestionForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

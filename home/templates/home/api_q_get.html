@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <a href="{% url 'home:api_q_create' %}" class="btn btn-danger">Create question</a>
+    <br><hr/>
     <h2>API questions list</h2><br>
+    <br>
         <ul>
             {% for j in json_response %}
-                <li>{{ j.username }} asked "{{ j.body }}"  -  {{ j.created }}</li>
+                <li><b>Question {{ j.id }}:</b> {{ j.username }} asked "{{ j.body }}"  -  {{ j.created }}
+                <a href="{% url 'home:api_q_update' j.id %}" class="btn btn-warning">Update question</a></li>
+                <b>answers :</b><br>
+                {% for i in j.answers %}
+                {{ i.username2 }} answered: "{{ i.body}}"<br>
+                {% empty %}
+                no answer
+                {% endfor %}<br><br>
             {% endfor %}
         </ul><br><br>
+        
 {% endblock %}
