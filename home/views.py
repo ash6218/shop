@@ -221,18 +221,15 @@ class QuestionApiUpdateView(LoginRequiredMixin, View):
         form = ApiQuestionForm(initial=qusetion_data)
         return render(request, 'home/api_q_update.html', {'form':form})
 
-    def put(self, request, pk):
-        import json
-        data = json.loads(request.body)
+    def post(self, request, pk):
+        data = request.POST
         form = ApiQuestionForm(data)
         if form.is_valid():
             try:
                 url = f'http://127.0.0.1:8000/question/update/{pk}/'
                 headers = {'Authorization':settings.API_TOKEN}
                 json_response = requests.put(url, headers=headers, json=form.cleaned_data).json()
-                print('##', f'data: {form.cleaned_data}')
-                print('###', f'api response: {json_response}')
-                messages.success(request, f'new question is created: {json_response}', 'success')
+                messages.success(request, f'question is updated {json_response}', 'success')
                 return redirect('home:api_question')
             except:
                 messages.error(request, f'API connection failed:{json_response}', 'warning')

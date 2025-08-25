@@ -25,7 +25,8 @@ class SearchForm(forms.Form):
             field.widget.attrs['class'] = 'form-control'
 
 class ApiQuestionForm(forms.Form):
-    user = forms.IntegerField()
+    user = forms.IntegerField(label='User id')
+    username = forms.CharField(max_length=200, disabled=True, required=False)
     title = forms.CharField(max_length=200)
     body = forms.CharField(max_length=2000)
 

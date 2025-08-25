@@ -4,10 +4,11 @@
     
     <h2>API questions Create Form</h2><br>
     <br>
-        <form action="" method="put">
+        <form action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Update">
         </form>
-        
+    <br>
+    <b>Note : user will change based on user id (look at users list)</b>
 {% endblock %}
