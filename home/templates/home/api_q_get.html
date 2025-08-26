@@ -8,13 +8,16 @@
         <ul>
             {% for j in json_response %}
                 <li><b>Question {{ j.id }}:</b> {{ j.username }} asked "{{ j.body }}"  -  {{ j.created }}
-                <a href="{% url 'home:api_q_update' j.id %}" class="btn btn-warning">Update question</a></li>
+                </li>
                 <b>answers :</b><br>
                 {% for i in j.answers %}
                 {{ i.username2 }} answered: "{{ i.body}}"<br>
                 {% empty %}
-                no answer
-                {% endfor %}<br><br>
+                no answer<br>
+                {% endfor %}
+                <a href="{% url 'home:api_q_update' j.id %}" class="btn btn-warning">Update question</a>
+                <a href="{% url 'home:api_q_delete' j.id %}" class="btn btn-danger">Delete question</a>
+                <br><br>
             {% endfor %}
         </ul><br><br>
         

@@ -1,5 +1,6 @@
 from kavenegar import *
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.conf import settings
 
 def send_otp_code(phone_number, code, request):
     try:
@@ -18,6 +19,11 @@ def send_otp_code(phone_number, code, request):
         # e.decode('utf-8')
     except HTTPException as e: 
         print(e)
+
+def get_api_headers():
+    return {'Authorization':settings.API_TOKEN}
+
+
     """
     from sms_ir import SmsIr
     try:

@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ImageUploadForm, CommentForm, SearchForm, ApiQuestionForm
 from bucket import bucket, list_s3_images
 import os, requests
-from utils import IsAdminUserMixin
+from utils import IsAdminUserMixin, get_api_headers
 from shop import settings
 from orders.forms import CartAddForm
 from django.db.models import Q
@@ -161,7 +161,7 @@ class PersonApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/'
-            headers = {'Authorization':settings.API_TOKEN}
+            headers = get_api_headers()
             json_response = requests.get(url, headers=headers).json()
             print(f'api response: {json_response}')
             return render(request, 'home/api_result.html', {'json_response':json_response})
@@ -173,7 +173,7 @@ class UserApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/accounts/user'
-            headers = {'Authorization':settings.API_TOKEN}
+            headers = get_api_headers()
             json_response = requests.get(url, headers=headers).json()
             return render(request, 'home/api_user_result.html', {'json_response':json_response})
         except:
@@ -184,8 +184,9 @@ class QuestionApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/questions/'
-            headers = {'Authorization':settings.API_TOKEN}
+            headers = get_api_headers()
             json_response = requests.get(url, headers=headers).json()
+            request.session['questions'] = json_response # using sessions for update
             return render(request, 'home/api_q_get.html', {'json_response':json_response})
         except:
             messages.error(request, f'API connection failed:{json_response}', 'warning')
@@ -201,7 +202,7 @@ class QuestionApiCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             try:
                 url = 'http://127.0.0.1:8000/question/create/'
-                headers = {'Authorization':settings.API_TOKEN}
+                headers = get_api_headers()
                 json_response = requests.post(url, headers=headers, json=form.cleaned_data).json()
                 print(f'data: {form.cleaned_data}')
                 print(f'api response: {json_response}')
@@ -214,11 +215,13 @@ class QuestionApiCreateView(LoginRequiredMixin, View):
     
 class QuestionApiUpdateView(LoginRequiredMixin, View):
     def get(self, request, pk):
-        url = 'http://127.0.0.1:8000/questions/'
-        headers = {'Authorization':settings.API_TOKEN}
+        """url = 'http://127.0.0.1:8000/questions/' 
+        headers = get_api_headers()
         json_response = requests.get(url, headers=headers).json() # do it with sessions
-        qusetion_data = next((i for i in json_response if int(i['id'])==pk), None)
-        form = ApiQuestionForm(initial=qusetion_data)
+        question_data = next((i for i in json_response if int(i['id'])==pk), None)"""
+        question_data = next((i for i in request.session['questions'] if int(i['id'])==pk), None)
+        # using sessions is easier but there might be some problems due to delays that need update
+        form = ApiQuestionForm(initial=question_data)
         return render(request, 'home/api_q_update.html', {'form':form})
 
     def post(self, request, pk):
@@ -227,12 +230,29 @@ class QuestionApiUpdateView(LoginRequiredMixin, View):
         if form.is_valid():
             try:
                 url = f'http://127.0.0.1:8000/question/update/{pk}/'
-                headers = {'Authorization':settings.API_TOKEN}
+                headers = get_api_headers()
                 json_response = requests.put(url, headers=headers, json=form.cleaned_data).json()
-                messages.success(request, f'question is updated {json_response}', 'success')
+                
+                try:
+                    detail = json_response['detail']
+                    messages.error(request, f'question is not updated: {detail}', 'warning')
+                except:
+                    messages.success(request, f'question is updated: title: "{json_response['title']}" - body: "{json_response['body']}"', 'success')
                 return redirect('home:api_question')
             except:
                 messages.error(request, f'API connection failed:{json_response}', 'warning')
                 return redirect('home:api')
         return render(request, 'home/api_q_update.html', {'json_response':json_response})
     
+class QuestionApiDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        url = f'http://127.0.0.1:8000/question/delete/{pk}/'
+        headers = get_api_headers()
+        requests.delete(url, headers=headers)
+        messages.success(request, 'question is deleted', 'success')
+        return redirect('home:api_question')
+
+"""question_session = request.sesseion['question']
+        test1 = pk
+        print('+++++++++++++++++++')
+        print(question_session, '========', test1)"""
