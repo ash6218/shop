@@ -3,7 +3,7 @@ from django.views import View
 from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm
 from .forms import UserUpdateProfileForm, ProfileImageUploadForm, ChangeSmsForm, ApiRegisterForm
 import random, pytz, os, requests
-from utils import send_otp_code
+from utils import send_otp_code, get_api_headers
 from .models import OtpCode, User
 from django.contrib import messages
 from datetime import datetime, timedelta
@@ -306,7 +306,7 @@ class ApiRegisterView(View):
         try:
             if form.is_valid():
                 url = 'http://127.0.0.1:8000/accounts/register/'
-                headers = {'Authorization':'token 6b5efc10e9641d5944ac635e005225eacab0ab5e'}
+                headers = get_api_headers()
                 response = requests.post(url, headers=headers, json=form.cleaned_data).json()
                 print(f'data: {form.cleaned_data}')
                 print(f'api response: {response}')

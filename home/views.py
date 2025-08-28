@@ -246,11 +246,18 @@ class QuestionApiUpdateView(LoginRequiredMixin, View):
     
 class QuestionApiDeleteView(LoginRequiredMixin, View):
     def get(self, request, pk):
-        url = f'http://127.0.0.1:8000/question/delete/{pk}/'
-        headers = get_api_headers()
-        requests.delete(url, headers=headers)
-        messages.success(request, 'question is deleted', 'success')
-        return redirect('home:api_question')
+            url = f'http://127.0.0.1:8000/question/delete/{pk}/'
+            headers = get_api_headers()
+            requests.delete(url, headers=headers)
+            url2 = 'http://127.0.0.1:8000/questions/'
+            json_response = requests.get(url2, headers=headers).json()
+            question_data = next((i for i in json_response if int(i['id'])==pk), None)
+            try:
+                a = question_data['id']==pk
+                messages.error(request, 'question can not be deleted', 'warning')
+            except:
+                messages.success(request, 'question is deleted', 'success')
+            return redirect('home:api_question')
 
 """question_session = request.sesseion['question']
         test1 = pk
