@@ -118,3 +118,7 @@ class ApiRegisterForm(forms.Form):
         if p1 and p2 and p1!=p2:
             raise ValidationError('Passwords must match!')
         return p2
+    
+class ApiLoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(required=True, widget=forms.PasswordInput)

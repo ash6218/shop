@@ -17,10 +17,14 @@
         </ul>
 
         <ul class="navbar-nav ms-auto mb-2 mb-lg-1">
+          {% if request.session.api_username %}
+          <li class="nav-item">
+            <a class="btn btn-warning ms-2" href="#">API user: {{ request.session.api_username }} (id: {{ request.session.api_id }})</a>
+          </li>
+          {% endif %}
           {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="btn btn-secondary ms-2" href="{% url 'accounts:profile' %}">{{ request.user.full_name }}</a>
-            
           </li>
           {% if request.user.is_superuser %}
           <li class="nav-item">

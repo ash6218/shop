@@ -20,4 +20,5 @@ urlpatterns = [
     path('upload_profile/', views.UploadProfileImageView.as_view(), name='upload_profile'),
     path('change_sms_form/', views.ChangeSmsFormView.as_view(), name='change_sms_form'),
     path('api_register/', views.ApiRegisterView.as_view(), name='api_register'),
+    path('api_login/', views.ApiLoginView.as_view(), name='api_login'),
 ]

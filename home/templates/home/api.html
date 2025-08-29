@@ -3,13 +3,16 @@
 {% block content %}
     <h2>API Links</h2>
     <br><hr>
+    <a href="{% url 'accounts:api_login' %}" class="btn btn-primary">API Login</a>
+    <br>
+    <br>
+    <a href="{% url 'accounts:api_register' %}" class="btn btn-success">API Register</a>
+    <br>
+    <br>
     <a href="{% url 'home:api_req' %}" class="btn btn-danger">send API request for persons</a>
     <br>
     <br>
     <a href="{% url 'home:api_req_user' %}" class="btn btn-danger">send API request for users</a>
-    <br>
-    <br>
-    <a href="{% url 'accounts:api_register' %}" class="btn btn-success">API Register</a>
     <br>
     <br>
     <a href="{% url 'home:api_question' %}" class="btn btn-info">API Questions</a>

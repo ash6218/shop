@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .forms import UserCreationForm, VerifyCodeForm, UserLoginForm, UserOtpLoginForm, UserChagePasswordForm
-from .forms import UserUpdateProfileForm, ProfileImageUploadForm, ChangeSmsForm, ApiRegisterForm
+from .forms import UserUpdateProfileForm, ProfileImageUploadForm, ChangeSmsForm, ApiRegisterForm, ApiLoginForm
 import random, pytz, os, requests
-from utils import send_otp_code, get_api_headers
+from utils import send_otp_code, get_api_user, generate_token
 from .models import OtpCode, User
 from django.contrib import messages
 from datetime import datetime, timedelta
@@ -269,7 +269,7 @@ class UploadProfileImageView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form})
     
 class ChangeSmsFormView(View):
-    # it works!
+    # it works! or not?
     form_class = ChangeSmsForm
     template_name = 'accounts/changesmsform.html'
 
@@ -279,7 +279,7 @@ class ChangeSmsFormView(View):
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request):
-        form = self.form_class # no prantesis is needed
+        form = self.form_class
         return render(request, self.template_name, {'form':form})
 
     def post(self, request):
@@ -298,7 +298,7 @@ class ApiRegisterView(View):
     template_name = 'accounts/api_register.html'
 
     def get(self, request):
-        form = self.form_class # no prantesis is needed
+        form = self.form_class
         return render(request, self.template_name, {'form':form})
 
     def post(self, request):
@@ -306,19 +306,50 @@ class ApiRegisterView(View):
         try:
             if form.is_valid():
                 url = 'http://127.0.0.1:8000/accounts/register/'
-                headers = get_api_headers()
-                response = requests.post(url, headers=headers, json=form.cleaned_data).json()
+                response = requests.post(url, json=form.cleaned_data).json()
                 print(f'data: {form.cleaned_data}')
                 print(f'api response: {response}')
                 try:
                     if form.cleaned_data['username']==response['username']:
                         messages.success(request, f'the user is registered: {response}', 'success')
+                        request.session['token'] = generate_token(form)
+                        request.session['api_username'] = form.cleaned_data['username']
+                        get_api_user(request)
+                        messages.success(request, f'you also logged in as "{request.session['api_username']}" (id:{request.session['api_id']}) - API token activated.', 'success')
                         return redirect('accounts:api_register')
-                    messages.error(request, f'Error: {response}', 'warning')
-                except:
-                    messages.error(request, f'Error: {response}', 'warning')
+                    messages.error(request, f'Error1: {response}', 'warning')
+                except Exception as e:
+                    s = str(e)
+                    messages.error(request, f'Error2: {response} - {s}', 'warning')
             messages.error(request, 'The form was not valid. please try again.', 'warning')
             return render(request, self.template_name, {'form':form})
         except:
             messages.error(request, 'API connection failed.', 'warning')
             return redirect('home:home')
+        
+class ApiLoginView(LoginRequiredMixin, View):
+    form_class = ApiLoginForm
+    template_name = 'accounts/api_login.html'
+
+    def get(self, request):
+        form = self.form_class 
+        return render(request, self.template_name, {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        try:
+            if form.is_valid():
+                try:
+                    request.session['token'] = generate_token(form)
+                    request.session['api_username'] = form.cleaned_data['username']
+                    get_api_user(request)
+                    messages.success(request, f'you logged in as "{request.session['api_username']}" (id:{request.session['api_id']}) - API token activated.', 'success')
+                except:
+                    messages.error(request, 'Error: This user does not exist. please try again.', 'warning')
+                return redirect('accounts:api_login')
+            messages.error(request, 'The form was not valid. please try again.', 'warning')
+            return render(request, self.template_name, {'form':form})
+        except Exception as e:
+            s = str(e)
+            messages.error(request, f'Error: {s}', 'warning')
+            return redirect('accounts:api_login')

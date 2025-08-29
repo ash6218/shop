@@ -15,8 +15,10 @@
                 {% empty %}
                 no answer<br>
                 {% endfor %}
+                {% if request.session.api_username == j.username %} 
                 <a href="{% url 'home:api_q_update' j.id %}" class="btn btn-warning">Update question</a>
                 <a href="{% url 'home:api_q_delete' j.id %}" class="btn btn-danger">Delete question</a>
+                {% endif %}
                 <br><br>
             {% endfor %}
         </ul><br><br>

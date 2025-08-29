@@ -20,8 +20,31 @@ def send_otp_code(phone_number, code, request):
     except HTTPException as e: 
         print(e)
 
-def get_api_headers():
-    return {'Authorization':settings.API_TOKEN}
+
+class IsAdminUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_admin
+    
+def generate_token(form):
+    url2 = 'http://127.0.0.1:8000/accounts/api-token-auth/'
+    response2 = requests.post(url2, json=form.cleaned_data).json()
+    token = f'token {response2['token']}'
+    return token
+    #print(token)
+
+def get_api_headers(request):
+    return {'Authorization':request.session['token']}
+
+def get_api_user(request):
+    url3 = 'http://127.0.0.1:8000/accounts/user'
+    headers3 = get_api_headers(request)
+    json_response = requests.get(url3, headers=headers3).json()
+    api_user1 = next((i for i in json_response if i['username']==request.session['api_username']), None)
+    request.session['api_id']=api_user1['id']
+    return request.session['api_id']
+
+
+
 
 
     """
@@ -54,7 +77,3 @@ def get_api_headers():
     except HTTPException as e: 
         print(e)
     """
-
-class IsAdminUserMixin(UserPassesTestMixin):
-    def test_func(self):
-        return self.request.user.is_authenticated and self.request.user.is_admin

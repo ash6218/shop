@@ -156,12 +156,13 @@ class MyFavoritesListView(LoginRequiredMixin, View):
 class ApiView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'home/api.html')
+    
 
 class PersonApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/'
-            headers = get_api_headers()
+            headers = get_api_headers(request)
             json_response = requests.get(url, headers=headers).json()
             print(f'api response: {json_response}')
             return render(request, 'home/api_result.html', {'json_response':json_response})
@@ -173,7 +174,7 @@ class UserApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/accounts/user'
-            headers = get_api_headers()
+            headers = get_api_headers(request)
             json_response = requests.get(url, headers=headers).json()
             return render(request, 'home/api_user_result.html', {'json_response':json_response})
         except:
@@ -184,7 +185,7 @@ class QuestionApiRequestView(LoginRequiredMixin, View):
     def get(self, request):
         try:
             url = 'http://127.0.0.1:8000/questions/'
-            headers = get_api_headers()
+            headers = get_api_headers(request)
             json_response = requests.get(url, headers=headers).json()
             request.session['questions'] = json_response # using sessions for update
             return render(request, 'home/api_q_get.html', {'json_response':json_response})
@@ -202,7 +203,7 @@ class QuestionApiCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             try:
                 url = 'http://127.0.0.1:8000/question/create/'
-                headers = get_api_headers()
+                headers = get_api_headers(request)
                 json_response = requests.post(url, headers=headers, json=form.cleaned_data).json()
                 print(f'data: {form.cleaned_data}')
                 print(f'api response: {json_response}')
@@ -216,7 +217,7 @@ class QuestionApiCreateView(LoginRequiredMixin, View):
 class QuestionApiUpdateView(LoginRequiredMixin, View):
     def get(self, request, pk):
         """url = 'http://127.0.0.1:8000/questions/' 
-        headers = get_api_headers()
+        headers = get_api_headers(request)
         json_response = requests.get(url, headers=headers).json() # do it with sessions
         question_data = next((i for i in json_response if int(i['id'])==pk), None)"""
         question_data = next((i for i in request.session['questions'] if int(i['id'])==pk), None)
@@ -230,7 +231,7 @@ class QuestionApiUpdateView(LoginRequiredMixin, View):
         if form.is_valid():
             try:
                 url = f'http://127.0.0.1:8000/question/update/{pk}/'
-                headers = get_api_headers()
+                headers = get_api_headers(request)
                 json_response = requests.put(url, headers=headers, json=form.cleaned_data).json()
                 
                 try:
@@ -247,7 +248,7 @@ class QuestionApiUpdateView(LoginRequiredMixin, View):
 class QuestionApiDeleteView(LoginRequiredMixin, View):
     def get(self, request, pk):
             url = f'http://127.0.0.1:8000/question/delete/{pk}/'
-            headers = get_api_headers()
+            headers = get_api_headers(request)
             requests.delete(url, headers=headers)
             url2 = 'http://127.0.0.1:8000/questions/'
             json_response = requests.get(url2, headers=headers).json()
