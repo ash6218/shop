@@ -33,7 +33,10 @@ def generate_token(form):
     #print(token)
 
 def get_api_headers(request):
-    return {'Authorization':request.session['token']}
+    try:
+        return {'Authorization':request.session['token']}
+    except:
+        return {'Authorization':'token 0'}
 
 def get_api_user(request):
     url3 = 'http://127.0.0.1:8000/accounts/user'

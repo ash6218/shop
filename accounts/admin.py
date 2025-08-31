@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, OtpCode
+from .models import User, OtpCode, Profile
 from django.contrib.auth.models import Group
 from django.conf import settings
 
@@ -43,5 +43,6 @@ class UserAdmin(BaseUserAdmin):
     
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Profile)
 
 

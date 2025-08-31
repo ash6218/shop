@@ -344,6 +344,7 @@ class ApiLoginView(LoginRequiredMixin, View):
                     request.session['api_username'] = form.cleaned_data['username']
                     get_api_user(request)
                     messages.success(request, f'you logged in as "{request.session['api_username']}" (id:{request.session['api_id']}) - API token activated.', 'success')
+                    return redirect('home:api')
                 except:
                     messages.error(request, 'Error: This user does not exist. please try again.', 'warning')
                 return redirect('accounts:api_login')
@@ -353,3 +354,10 @@ class ApiLoginView(LoginRequiredMixin, View):
             s = str(e)
             messages.error(request, f'Error: {s}', 'warning')
             return redirect('accounts:api_login')
+        
+class ApiLogoutView(LoginRequiredMixin, View):
+    def get(self, request):
+        request.session['token'] = {'Authorization':'token 0'}
+        request.session['api_username'] = {}
+        messages.success(request, f'you logged out as api successfully', 'success')
+        return redirect('home:api')

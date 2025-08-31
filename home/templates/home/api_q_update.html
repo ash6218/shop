@@ -3,11 +3,23 @@
 {% block content %}
     
     <h2>API questions Update Form</h2><br>
-    <br>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Update">
-        </form>
+    <form>
+        <div class="mb-6">
+            <label for="exampleInputEmail1" class="form-label">User ID</label>
+            <input type="email" class="form-control" value="{{question_data.user}}" readonly data-bs-toggle="tooltip"
+                title="You can not change this field">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Username</label>
+            <input class="disabled form-control" value="{{question_data.username}}" readonly data-bs-toggle="tooltip"
+                title="You can not change this field">
+        </div>
+    </form>
+   
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Update">
+    </form>
     <br>
 {% endblock %}

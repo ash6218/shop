@@ -42,6 +42,11 @@ class UserCreationForm(forms.ModelForm): # for creating a new form in admin pane
             user.save()
         return user
     
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
 class UserChangeForm(forms.ModelForm): # for changing a new form in admin panel
     password = ReadOnlyPasswordHashField(help_text="you can change password using <a href=\"../password/\">this form<a/>")
     # with ReadOnlyPasswordHashField, user cant see or change password dirctly, instead they can use the link provided.
@@ -105,6 +110,11 @@ class ChangeSmsForm(forms.Form):
     admin_enrty_code = forms.CharField(label='Admin Enrty Code', max_length=20)
     sms_parameter = forms.CharField(label='SMS Parameter', max_length=100)
 
+    def __init__(self, *args, **kwargs):
+        super(ChangeSmsForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
 class ApiRegisterForm(forms.Form):
     username = forms.CharField()
     email = forms.EmailField()
@@ -119,6 +129,16 @@ class ApiRegisterForm(forms.Form):
             raise ValidationError('Passwords must match!')
         return p2
     
+    def __init__(self, *args, **kwargs):
+        super(ApiRegisterForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+    
 class ApiLoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(required=True, widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super(ApiLoginForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
