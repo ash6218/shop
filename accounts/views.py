@@ -15,10 +15,12 @@ from django.contrib.auth import views as auth_views, update_session_auth_hash
 from django.urls import reverse_lazy
 from bucket import bucket
 from . import tasks
+from django.views.generic import TemplateView, RedirectView, ListView
 
-class UserRegisterView(View):
+class UserRegisterView(ListView):
     form_class = UserCreationForm
     template_name = 'accounts/register.html'
+    
     def get(self, request):
         form = self.form_class # no prantesis is needed
         return render(request, self.template_name, {'form':form})
@@ -105,11 +107,16 @@ class UserLoginView(View):
         return render(request, self.template_name, {'form':form})
     
 
-class UserLogoutView(LoginRequiredMixin, View):
-    def get(self, request): 
+class UserLogoutView(LoginRequiredMixin, RedirectView):
+    pattern_name = 'home:home'
+    def get_redirect_url(self, *args, **kwargs):
+        logout(self.request) # we can access request by self.request
+        messages.success(self.request, 'you logged out successfully','success')
+        return super().get_redirect_url(*args, **kwargs)
+    """def get(self, request): 
         logout(request)
         messages.success(request, 'you logged out successfully','success')
-        return redirect('home:home')
+        return redirect('home:home')"""
     
 class UserOtpLoginView(View):
     form_class = UserOtpLoginForm
@@ -177,13 +184,8 @@ class UserLoginVerifyCodeView(View):
             return redirect('accounts:login_verify_code')
         return render(request, self.template_name, {'form':form})
 
-class UserProfileView(LoginRequiredMixin, View):
-    def get(self, request):
-        print(f'profile request.user.image_url:{request.user.image_url}')
-        if request.user.image_url:
-            img = request.user.image_url
-            print(img)
-        return render(request, 'accounts/profile.html')
+class UserProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/profile.html'
     
 class UserUpdateProfileView(LoginRequiredMixin, View):
     form_class = UserUpdateProfileForm

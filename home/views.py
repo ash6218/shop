@@ -11,6 +11,7 @@ from utils import IsAdminUserMixin, get_api_headers
 from shop import settings
 from orders.forms import CartAddForm
 from django.db.models import Q
+from django.views.generic import TemplateView, RedirectView
 
 
 class HomeView(View):
@@ -153,9 +154,10 @@ class MyFavoritesListView(LoginRequiredMixin, View):
             products.append(fav.product)
         return render(request, 'home/my_favorite.html', {'products':products})
     
-class ApiView(LoginRequiredMixin, View):
-    def get(self, request):
-        return render(request, 'home/api.html')
+class ApiView(LoginRequiredMixin, TemplateView):
+    template_name = 'home/api.html'
+    """def get(self, request):
+        return render(request, 'home/api.html')"""
     
 
 class PersonApiRequestView(LoginRequiredMixin, View):
