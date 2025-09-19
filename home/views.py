@@ -283,3 +283,7 @@ class QuestionApiDeleteView(LoginRequiredMixin, View):
         test1 = pk
         print('+++++++++++++++++++')
         print(question_session, '========', test1)"""
+
+class AiPageView(View):
+    def get(self, request):
+        return render(request, 'home/ai_page.html')
